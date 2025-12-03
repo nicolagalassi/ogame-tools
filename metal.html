@@ -32,9 +32,14 @@
         }
     </script>
     <style>
-        /* Nasconde le frecce negli input number */
         input[type=number]::-webkit-inner-spin-button { opacity: 0; }
         input[type=number]:hover::-webkit-inner-spin-button { opacity: 1; }
+        
+        /* Custom Checkbox Style */
+        .toggle-checkbox:checked {
+            background-color: #3399ff;
+            border-color: #3399ff;
+        }
     </style>
 </head>
 <body class="bg-ogame-bg text-ogame-text font-sans pb-32 min-h-screen">
@@ -59,21 +64,16 @@
                     <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     <span class="text-[10px] uppercase font-bold">Salva</span>
                 </button>
-                
                 <div class="w-px bg-gray-700 my-2"></div>
-                
                 <button onclick="document.getElementById('fileInput').click()" class="flex flex-col items-center justify-center w-20 h-16 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group" title="Carica file JSON">
                     <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     <span class="text-[10px] uppercase font-bold">Carica</span>
                 </button>
-                
                 <div class="w-px bg-gray-700 my-2"></div>
-                
                 <button onclick="resetAll()" class="flex flex-col items-center justify-center w-20 h-16 rounded-lg hover:bg-red-900/20 transition text-gray-400 hover:text-ogame-danger group" title="Cancella tutto">
                     <svg class="w-6 h-6 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     <span class="text-[10px] uppercase font-bold">Reset</span>
                 </button>
-                
                 <input type="file" id="fileInput" accept=".json" onchange="importData(this)" class="hidden">
             </div>
         </div>
@@ -90,7 +90,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Velocita' Economia</label>
+                        <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Velocità Economia</label>
                         <input type="number" id="ecoSpeed" value="8" min="1" onchange="calculateAll()" 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition text-lg font-mono">
                     </div>
@@ -99,7 +99,7 @@
                         <select id="playerClass" onchange="calculateAll()" 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition">
                             <option value="collector">Collezionista (+25%)</option>
-                            <option value="other">Explorer / General</option>
+                            <option value="other">Altro / General</option>
                         </select>
                     </div>
                 </div>
@@ -178,9 +178,11 @@
 
     // --- TEMPLATE CARD (JS) ---
     function getPlanetHTML(id, data = null) {
+        // Default: hasCrawlers è true, a meno che non sia specificato false nei dati caricati
         const v = data || {
             metal: 30, crystal: 0, deuterium: 0, 
-            pos: 8, item: 0, magma: 0
+            pos: 8, item: 0, magma: 0, 
+            hasCrawlers: true 
         };
 
         const inputStyle = "w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono";
@@ -251,6 +253,15 @@
                         <label class="${labelStyle}">Magma Forge (Livello)</label>
                         <input type="number" class="p-magma ${inputStyle}" value="${v.magma}" placeholder="0" onchange="calculateAll()">
                     </div>
+
+                    <div class="pt-4 border-t border-gray-800">
+                        <label class="flex items-center space-x-3 cursor-pointer group/crawler">
+                            <input type="checkbox" class="p-has-crawlers w-5 h-5 accent-ogame-warning bg-gray-800 border-gray-600 rounded cursor-pointer" 
+                                ${v.hasCrawlers ? 'checked' : ''} onchange="calculateAll()">
+                            <span class="${labelStyle} text-ogame-warning mb-0 group-hover/crawler:text-white transition">Crawler Attivi</span>
+                        </label>
+                    </div>
+
                 </div>
 
                 <div class="breakdown bg-black/30 p-4 rounded-lg mt-5 font-mono text-[11px] border border-gray-800 space-y-1" id="breakdown-${id}">
@@ -260,7 +271,6 @@
         `;
     }
 
-    // --- FUNZIONE PER RINUMERARE VISIVAMENTE I PIANETI ---
     function renumberPlanets() {
         const indices = document.querySelectorAll('.planet-index');
         indices.forEach((el, index) => {
@@ -275,7 +285,7 @@
         planetCounter++;
         const container = document.getElementById('planetList');
         container.insertAdjacentHTML('beforeend', getPlanetHTML(planetCounter));
-        renumberPlanets(); // Rinumera
+        renumberPlanets(); 
         calculateAll();
     }
 
@@ -284,14 +294,14 @@
         const data = extractPlanetData(card);
         planetCounter++;
         document.getElementById('planetList').insertAdjacentHTML('beforeend', getPlanetHTML(planetCounter, data));
-        renumberPlanets(); // Rinumera
+        renumberPlanets(); 
         calculateAll();
     }
 
     function removePlanet(id) {
         const el = document.getElementById(`card-${id}`);
         if (el) el.remove();
-        renumberPlanets(); // Rinumera dopo la rimozione
+        renumberPlanets();
         calculateAll();
     }
     
@@ -307,7 +317,8 @@
             deuterium: cardElement.querySelector('.p-deuterium').value,
             pos: cardElement.querySelector('.p-pos').value,
             item: cardElement.querySelector('.p-item').value,
-            magma: cardElement.querySelector('.p-magma').value
+            magma: cardElement.querySelector('.p-magma').value,
+            hasCrawlers: cardElement.querySelector('.p-has-crawlers').checked
         };
     }
 
@@ -340,9 +351,7 @@
             const pos = parseInt(pData.pos);
             const itemPerc = parseInt(pData.item);
             const magmaLvl = parseInt(pData.magma) || 0;
-            
-            // Calcolo Somma Miniere per Crawler
-            const mineSum = metalLvl + crystalLvl + deuteriumLvl;
+            const hasCrawlers = pData.hasCrawlers; // Boolean
 
             // A. Posizione
             let posMultiplier = 1.0;
@@ -370,20 +379,23 @@
             if (globalData.staff) { bonuses.push({name: "Staff", val: 2}); totalPercent += 2; }
             if (globalData.playerClass === 'collector') { bonuses.push({name: "Collector", val: 25}); totalPercent += 25; }
             
-            // Trader Bonus 5%
             if (globalData.allyClass === 'trader') { bonuses.push({name: "Trader", val: 5}); totalPercent += 5; }
             
             if (itemPerc > 0) { bonuses.push({name: "Item", val: itemPerc}); totalPercent += itemPerc; }
             if (magmaLvl > 0) { const val = magmaLvl * 2; bonuses.push({name: `Magma (${magmaLvl})`, val: val}); totalPercent += val; }
             if (globalData.lfGlobalBonus > 0) { bonuses.push({name: "Tech LF", val: globalData.lfGlobalBonus}); totalPercent += globalData.lfGlobalBonus; }
             
-            // Crawler Auto-Calc (Somma Livelli * 8)
-            const activeCrawlers = mineSum * 8;
-            if (activeCrawlers > 0) {
-                const crawlerFactor = (globalData.playerClass === 'collector') ? 0.03 : 0.02; 
-                let crawlerPerc = activeCrawlers * crawlerFactor;
-                bonuses.push({name: `Crawler (${activeCrawlers})`, val: crawlerPerc}); 
-                totalPercent += crawlerPerc; 
+            // Crawler Logic (Nuova con Checkbox)
+            if (hasCrawlers) {
+                const mineSum = metalLvl + crystalLvl + deuteriumLvl;
+                const activeCrawlers = mineSum * 8;
+                
+                if (activeCrawlers > 0) {
+                    const crawlerFactor = (globalData.playerClass === 'collector') ? 0.03 : 0.02; 
+                    let crawlerPerc = activeCrawlers * crawlerFactor;
+                    bonuses.push({name: `Crawler (${activeCrawlers})`, val: crawlerPerc}); 
+                    totalPercent += crawlerPerc; 
+                }
             }
 
             // E. Totale
@@ -473,7 +485,7 @@
         } else {
             addPlanet();
         }
-        renumberPlanets(); // Rinumera al caricamento
+        renumberPlanets();
         calculateAll();
     }
 
@@ -490,6 +502,7 @@
         } else {
             addPlanet();
         }
+        updateBadge();
     }
 
     function exportData() {
