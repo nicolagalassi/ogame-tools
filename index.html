@@ -33,85 +33,101 @@
 <body class="bg-ogame-bg text-ogame-text font-sans min-h-screen flex flex-col">
 
     <header class="py-16 px-4 text-center bg-gradient-to-b from-[#161b22] to-transparent border-b border-ogame-border">
-        <div class="max-w-4xl mx-auto">
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+        <div class="max-w-4xl mx-auto relative">
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 opacity-[0.03] pointer-events-none">
+                <svg class="w-96 h-96 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 19h20L12 2zm0 3.8L18.4 17H5.6L12 5.8zM11 8v4h2V8h-2zm0 6v2h2v-2h-2z"/></svg>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight relative">
                 OGame <span class="text-ogame-accent">Utility Hub</span>
             </h1>
-            <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto relative">
                 Una suite di strumenti avanzati per ottimizzare il tuo impero, calcolare le produzioni e massimizzare i profitti.
             </p>
         </div>
     </header>
 
-    <main class="flex-grow p-6 md:p-12">
+    <main class="flex-grow p-6 md:p-12 z-10 relative">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <a href="metal.html" class="group relative bg-ogame-panel border border-ogame-border rounded-xl p-6 hover:border-ogame-accent transition-all duration-300 hover:shadow-[0_0_20px_rgba(51,153,255,0.15)] flex flex-col">
-                <div class="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition">
-                    <svg class="w-24 h-24 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44A.99.99 0 0 1 12 2c.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15z"/></svg>
+            <a href="metal.html" class="group relative bg-ogame-panel border border-ogame-border rounded-xl p-6 hover:border-ogame-accent transition-all duration-300 hover:shadow-[0_0_25px_rgba(51,153,255,0.15)] flex flex-col overflow-hidden">
+                <div class="absolute -top-6 -right-6 p-3 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-500 rotate-12 transform scale-150 pointer-events-none">
+                     <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19.14 7.27l-6.87-4a1.9 1.9 0 0 0-1.9 0l-6.87 4A1.9 1.9 0 0 0 2.55 9v8a1.9 1.9 0 0 0 .95 1.65l6.87 4a1.9 1.9 0 0 0 1.9 0l6.87-4a1.9 1.9 0 0 0 .95-1.65V9a1.9 1.9 0 0 0-.95-1.73zM11.27 3.72a.91.91 0 0 1 .9 0l6.87 4a.91.91 0 0 1 0 1.57L12.73 13a.91.91 0 0 1-.9 0L5 9.28a.91.91 0 0 1 0-1.57zM4.45 17V9.86L11 13.67v7.47zm8 8.14v-7.47l6.55-3.82V17z"/></svg>
                 </div>
                 
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-lg bg-gray-800 flex items-center justify-center border border-gray-600 group-hover:border-ogame-accent text-2xl shadow-inner">
-                        ??
+                <div class="flex items-center gap-4 mb-5 relative">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center border border-gray-700 group-hover:border-ogame-accent shadow-inner transition-colors group-hover:shadow-[0_0_15px_rgba(51,153,255,0.3)]">
+                        <svg class="w-8 h-8 text-gray-300 group-hover:text-ogame-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                     </div>
-                    <h2 class="text-xl font-bold text-white group-hover:text-ogame-accent transition">Metal Calculator</h2>
+                    <div>
+                        <h2 class="text-xl font-bold text-white group-hover:text-ogame-accent transition tracking-wide">Metal Calculator</h2>
+                        <span class="text-xs text-ogame-success font-medium uppercase tracking-wider">Attivo</span>
+                    </div>
                 </div>
                 
-                <p class="text-sm text-gray-400 mb-6 flex-grow">
+                <p class="text-sm text-gray-400 mb-6 flex-grow leading-relaxed">
                     Calcola la produzione esatta di metallo considerando posizioni, oggetti, forme di vita e plasma. Stima il valore dei pacchetti risorse 24h.
                 </p>
                 
-                <div class="flex items-center text-ogame-accent font-semibold text-sm">
-                    Apri Tool <span class="ml-2 transform group-hover:translate-x-1 transition-transform">?</span>
+                <div class="flex items-center text-ogame-accent font-bold text-sm uppercase tracking-wider">
+                    Apri Tool <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </div>
             </a>
 
-            <div class="relative bg-ogame-panel border border-ogame-border/50 rounded-xl p-6 opacity-60 flex flex-col cursor-not-allowed">
-                <div class="absolute top-4 right-4 px-2 py-1 bg-gray-800 text-xs font-bold text-gray-400 rounded border border-gray-700 uppercase tracking-wide">
+            <div class="group relative bg-ogame-panel border border-ogame-border/60 rounded-xl p-6 opacity-75 flex flex-col overflow-hidden cursor-not-allowed hover:border-gray-600 transition">
+                <div class="absolute -top-6 -right-6 p-3 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity duration-500 -rotate-12 transform scale-150 pointer-events-none">
+                    <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M13,2L3,12L13,22L23,12L13,2M13,4.42L20.58,12L13,19.58L5.42,12L13,4.42M13,7L8,12L13,17L18,12L13,7Z"/></svg>
+                </div>
+                 <div class="absolute top-4 right-4 px-2 py-1 bg-gray-800/80 text-[10px] font-bold text-gray-400 rounded border border-gray-700 uppercase tracking-wide">
                     Presto in arrivo
                 </div>
                 
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-lg bg-gray-800/50 flex items-center justify-center border border-gray-700 text-2xl grayscale">
-                        ??
+                <div class="flex items-center gap-4 mb-5 relative">
+                    <div class="w-14 h-14 rounded-2xl bg-gray-800/50 flex items-center justify-center border border-gray-700 text-2xl grayscale transition group-hover:grayscale-0 group-hover:border-blue-400/30">
+                        <svg class="w-8 h-8 text-blue-300/50 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12l-8-8-8 8 8 8 8-8z" fill="currentColor" fill-opacity="0.2"></path></svg>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-500">Crystal Calculator</h2>
+                    <h2 class="text-xl font-bold text-gray-500 group-hover:text-gray-300 transition tracking-wide">Crystal Calculator</h2>
                 </div>
                 
-                <p class="text-sm text-gray-500 mb-6 flex-grow">
+                <p class="text-sm text-gray-500 mb-6 flex-grow leading-relaxed">
                     Tool dedicato alla produzione di Cristallo, con gestione specifica per la classe General ed Esploratore.
                 </p>
+                 <div class="flex items-center text-gray-600 font-bold text-sm uppercase tracking-wider">
+                    In Sviluppo <svg class="w-4 h-4 ml-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
             </div>
 
-            <div class="relative bg-ogame-panel border border-ogame-border/50 rounded-xl p-6 opacity-60 flex flex-col cursor-not-allowed">
-                <div class="absolute top-4 right-4 px-2 py-1 bg-gray-800 text-xs font-bold text-gray-400 rounded border border-gray-700 uppercase tracking-wide">
+            <div class="group relative bg-ogame-panel border border-ogame-border/60 rounded-xl p-6 opacity-75 flex flex-col overflow-hidden cursor-not-allowed hover:border-gray-600 transition">
+                <div class="absolute -top-8 -right-8 p-3 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity duration-500 transform scale-150 pointer-events-none">
+                     <svg class="w-48 h-48 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                </div>
+                <div class="absolute top-4 right-4 px-2 py-1 bg-gray-800/80 text-[10px] font-bold text-gray-400 rounded border border-gray-700 uppercase tracking-wide">
                     Presto in arrivo
                 </div>
                 
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="w-12 h-12 rounded-lg bg-gray-800/50 flex items-center justify-center border border-gray-700 text-2xl grayscale">
-                        ??
+                <div class="flex items-center gap-4 mb-5 relative">
+                    <div class="w-14 h-14 rounded-2xl bg-gray-800/50 flex items-center justify-center border border-gray-700 text-2xl grayscale transition group-hover:grayscale-0 group-hover:border-red-400/30">
+                        <svg class="w-8 h-8 text-red-300/50 group-hover:text-red-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                     </div>
-                    <h2 class="text-xl font-bold text-gray-500">Flight Time</h2>
+                    <h2 class="text-xl font-bold text-gray-500 group-hover:text-gray-300 transition tracking-wide">Flight Time</h2>
                 </div>
                 
-                <p class="text-sm text-gray-500 mb-6 flex-grow">
+                <p class="text-sm text-gray-500 mb-6 flex-grow leading-relaxed">
                     Calcolatore tempi di volo, consumi deuterio e sincronizzazione attacchi/ACS.
                 </p>
+                 <div class="flex items-center text-gray-600 font-bold text-sm uppercase tracking-wider">
+                    In Sviluppo <svg class="w-4 h-4 ml-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
             </div>
 
         </div>
     </main>
 
-    <footer class="py-8 text-center border-t border-ogame-border bg-[#0d1014]">
+    <footer class="py-8 text-center border-t border-ogame-border bg-[#0d1014] z-10 relative">
         <p class="text-sm text-gray-500">
             Sviluppato per la community di OGame. 
             <span class="block mt-2 opacity-50 text-xs">Questo tool non è affiliato con Gameforge.</span>
         </p>
-        <div class="mt-4 flex justify-center gap-4">
-            <a href="#" class="text-gray-600 hover:text-white transition">GitHub Repo</a>
-        </div>
     </footer>
 
 </body>
