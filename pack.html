@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pack Calculator | OGame Hub</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ogame: {
+                            bg: '#0d1014',       
+                            panel: '#161b22',    
+                            border: '#30363d',   
+                            accent: '#3399ff',   
+                            success: '#238636',  
+                            danger: '#da3633',   
+                            warning: '#d29922', 
+                            dm: '#7834bc', 
+                            money: '#2ea043', 
+                            text: '#c9d1d9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        input[type=number]::-webkit-inner-spin-button { opacity: 0; }
+        input[type=number]:hover::-webkit-inner-spin-button { opacity: 1; }
+    </style>
+</head>
+<body class="bg-ogame-bg text-ogame-text font-sans pb-32 min-h-screen">
+
+    <header class="relative bg-gradient-to-b from-[#1c2128] to-ogame-bg border-b border-ogame-border pt-8 pb-12 px-4 mb-6">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <a href="index.html" class="inline-flex items-center text-sm text-gray-500 hover:text-ogame-accent transition mb-2 group">
+                    <svg class="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Torna all'Hub
+                </a>
+                <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">
+                    Pack <span class="text-ogame-accent">Calculator</span>
+                </h1>
+                <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base">
+                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
+                </p>
+            </div>
+            
+            <div class="flex gap-2 bg-ogame-panel p-2 rounded-xl border border-ogame-border shadow-lg">
+                 <button onclick="resetFields()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-red-900/20 transition text-gray-400 hover:text-ogame-danger group" title="Pulisci campi">
+                    <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <span class="text-[9px] uppercase font-bold">Reset</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 md:px-6">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-2 space-y-8">
+                
+                <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-ogame-accent"></div>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        Importa da OGLight / Info Costruzione
+                    </h3>
+                    
+                    <div class="relative">
+                        <textarea id="pasteArea" rows="3" placeholder="Incolla qui la stringa (es: 4.278.266 Metallo | 8.556.532 Cristallo...)" 
+                            class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-4 text-sm text-gray-300 focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono resize-none"></textarea>
+                        <button onclick="parseString()" class="absolute bottom-3 right-3 px-4 py-1.5 bg-ogame-accent hover:bg-blue-600 text-white text-xs font-bold rounded shadow transition">
+                            ESTRAI DATI
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative">
+                    <h3 class="text-lg font-bold text-white mb-6">Costi Risorse</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="relative group">
+                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Metallo</label>
+                            <div class="relative">
+                                <input type="text" id="costMetal" placeholder="0" oninput="formatInput(this); calculate()" 
+                                    class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-ogame-accent outline-none transition font-mono text-lg">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Cristallo</label>
+                            <div class="relative">
+                                <input type="text" id="costCrystal" placeholder="0" oninput="formatInput(this); calculate()" 
+                                    class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 outline-none transition font-mono text-lg">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Deuterio</label>
+                            <div class="relative">
+                                <input type="text" id="costDeut" placeholder="0" oninput="formatInput(this); calculate()" 
+                                    class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-blue-500 outline-none transition font-mono text-lg">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-sm font-bold text-gray-400 uppercase">Tasso (Met : Cri : Deu)</h3>
+                            <button onclick="setRate(3,2,1)" class="text-[10px] bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded border border-gray-600 text-gray-300">Default 3:2:1</button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="rateMet" value="3" readonly class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-center text-gray-500 font-bold focus:outline-none cursor-not-allowed" title="Fisso a 3">
+                            <span class="text-gray-500">:</span>
+                            <input type="number" id="rateCry" value="2" onchange="calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded p-2 text-center text-green-400 font-bold focus:border-green-500 outline-none">
+                            <span class="text-gray-500">:</span>
+                            <input type="number" id="rateDeut" value="1" onchange="calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded p-2 text-center text-blue-400 font-bold focus:border-blue-500 outline-none">
+                        </div>
+                        <p class="text-[10px] text-gray-500 mt-2 text-center">Converti tutto in Metallo. Metallo fisso a 3.</p>
+                    </div>
+
+                    <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl">
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Valore Pacchetto (Metallo)</h3>
+                        <div class="relative">
+                            <input type="text" id="packValue" value="300.000.000" oninput="formatInput(this); calculate()" 
+                                class="w-full bg-[#0d1014] border border-ogame-warning/50 rounded-lg p-3 text-ogame-warning font-bold focus:border-ogame-warning outline-none text-center text-lg shadow-[0_0_10px_rgba(210,153,34,0.1)]">
+                            <div class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-mono">MET</div>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mt-2 text-center">Prod. giornaliera dal Metal Calculator.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-4">
+                
+                <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl sticky top-6 flex flex-col justify-center min-h-[220px]">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-ogame-warning"></div>
+                    
+                    <div class="text-center mb-6">
+                        <div class="text-xs text-gray-500 uppercase tracking-widest mb-2">Costo Totale (MSE)</div>
+                        <div id="totalMSE" class="text-3xl font-mono font-bold text-white break-all">0</div>
+                    </div>
+
+                    <div class="border-t border-gray-700/50 my-6"></div>
+
+                    <div class="text-center">
+                        <div class="text-sm text-ogame-warning uppercase tracking-widest mb-2 font-bold">Pacchetti Necessari</div>
+                        <div id="packsNeeded" class="text-6xl font-bold text-white drop-shadow-[0_0_15px_rgba(210,153,34,0.5)]">0</div>
+                    </div>
+                </div>
+
+                <div class="bg-ogame-panel border border-ogame-dm/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-ogame-dm"></div>
+                    
+                    <div class="flex flex-col gap-3 mb-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-gray-300 uppercase flex items-center gap-2">
+                                <svg class="w-4 h-4 text-ogame-dm" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6V7z"/><path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1v-2H2a1 1 0 110-2h1V7a2 2 0 012-2h2V2zM5 7v6h10V7H5z" clip-rule="evenodd"/></svg>
+                                Costo MO
+                            </h3>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="moDiscount" onchange="calculate()" class="sr-only peer">
+                                <div class="relative w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-ogame-dm"></div>
+                                <span class="ms-2 text-[9px] font-medium text-gray-400 peer-checked:text-white">Sconto Pack (-30%)</span>
+                            </label>
+                        </div>
+                        
+                        <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
+                             <span class="text-[10px] text-gray-400 uppercase font-bold">Evento Bonus MO:</span>
+                             <select id="moBonus" onchange="calculate()" class="bg-[#0d1014] text-xs text-white outline-none text-right font-bold cursor-pointer border-none focus:ring-0">
+                                 <option value="0">Nessuno (Standard)</option>
+                                 <option value="30">+30% MO</option>
+                                 <option value="40">+40% MO</option>
+                                 <option value="50">+50% MO</option>
+                                 <option value="100">+100% MO</option>
+                             </select>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest">Totale MO Necessaria</div>
+                        <div id="moTotal" class="text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(120,52,188,0.5)] mb-1">0</div>
+                        <div class="text-[9px] text-gray-400" id="moPerPackLabel"></div>
+                    </div>
+                </div>
+
+                <div class="bg-ogame-panel border border-ogame-money/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-ogame-money"></div>
+                    
+                    <h3 class="text-sm font-bold text-gray-300 uppercase mb-4 flex items-center gap-2">
+                        <span class="text-ogame-money text-lg">€</span> Stima Costo Ottimizzato
+                    </h3>
+
+                    <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]">
+                        </div>
+
+                    <div class="border-t border-gray-700/50 my-3"></div>
+                    
+                    <div class="flex justify-between items-end">
+                         <span class="text-xs text-gray-500 uppercase font-bold">Totale</span>
+                         <span id="euroTotal" class="text-2xl font-bold text-ogame-money">0,00 €</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+<script>
+    const moPacks = [
+        { cost: 199.99, amount: 5100000 },
+        { cost: 99.99, amount: 2525000 },
+        { cost: 49.99, amount: 1140000 },
+        { cost: 24.99, amount: 480000 },
+        { cost: 9.99, amount: 150000 },
+        { cost: 4.99, amount: 60000 }
+    ];
+
+    function formatInput(input) {
+        let value = input.value.replace(/\D/g, '');
+        if (value === '') { input.value = ''; return; }
+        input.value = new Intl.NumberFormat('it-IT').format(BigInt(value));
+    }
+
+    function getRawValue(id) {
+        const val = document.getElementById(id).value.replace(/\./g, '');
+        return val === '' ? 0 : parseInt(val);
+    }
+
+    function setRate(m, c, d) {
+        document.getElementById('rateCry').value = c;
+        document.getElementById('rateDeut').value = d;
+        calculate();
+    }
+
+    function resetFields() {
+        document.getElementById('costMetal').value = '';
+        document.getElementById('costCrystal').value = '';
+        document.getElementById('costDeut').value = '';
+        document.getElementById('pasteArea').value = '';
+        document.getElementById('moDiscount').checked = false; 
+        document.getElementById('moBonus').value = "0"; 
+        calculate();
+    }
+
+    function parseString() {
+        const text = document.getElementById('pasteArea').value;
+        const matchMet = text.match(/([\d\.]+)\s*Metallo/i);
+        const matchCry = text.match(/([\d\.]+)\s*Cristallo/i);
+        const matchDeut = text.match(/([\d\.]+)\s*Deuterio/i);
+
+        if (matchMet) document.getElementById('costMetal').value = matchMet[1];
+        if (matchCry) document.getElementById('costCrystal').value = matchCry[1];
+        if (matchDeut) document.getElementById('costDeut').value = matchDeut[1];
+        calculate();
+    }
+
+    function calculate() {
+        const met = getRawValue('costMetal');
+        const cry = getRawValue('costCrystal');
+        const deut = getRawValue('costDeut');
+        const rM = 3.0; 
+        const rC = parseFloat(document.getElementById('rateCry').value) || 2;
+        const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
+        const packVal = getRawValue('packValue');
+        const isPackDiscount = document.getElementById('moDiscount').checked; 
+        const bonusPercent = parseInt(document.getElementById('moBonus').value);
+
+        const cryInMet = cry * (rM / rC);
+        const deutInMet = deut * (rM / rD);
+        const totalMSE = met + cryInMet + deutInMet;
+
+        let packs = 0;
+        if (packVal > 0 && totalMSE > 0) packs = Math.ceil(totalMSE / packVal);
+
+        const moPerPackCost = isPackDiscount ? 42000 : 60000;
+        const totalMONeeded = packs * moPerPackCost;
+
+        document.getElementById('totalMSE').innerText = new Intl.NumberFormat('it-IT').format(Math.ceil(totalMSE));
+        document.getElementById('packsNeeded').innerText = new Intl.NumberFormat('it-IT').format(packs);
+        document.getElementById('moTotal').innerText = new Intl.NumberFormat('it-IT').format(totalMONeeded);
+        document.getElementById('moPerPackLabel').innerText = `${new Intl.NumberFormat('it-IT').format(moPerPackCost)} MO / pack`;
+
+        calculateSmartEuro(totalMONeeded, bonusPercent);
+    }
+
+    function calculateSmartEuro(targetMO, bonusPercent) {
+        if (targetMO <= 0) {
+            document.getElementById('euroList').innerHTML = '<div class="text-center italic opacity-50">Nessun costo</div>';
+            document.getElementById('euroTotal').innerText = '0,00 €';
+            return;
+        }
+
+        const bonusMultiplier = 1 + (bonusPercent / 100);
+        let currentPacks = moPacks.map(p => ({
+            cost: p.cost,
+            amount: Math.floor(p.amount * bonusMultiplier),
+            originalAmount: p.amount
+        }));
+
+        let remaining = targetMO;
+        let purchaseList = [];
+        let totalCost = 0;
+
+        // 1. Compra i pacchetti più grandi possibili finché rientrano interamente nella cifra richiesta
+        for (let pack of currentPacks) {
+            if (remaining >= pack.amount) {
+                const count = Math.floor(remaining / pack.amount);
+                remaining -= count * pack.amount;
+                totalCost += count * pack.cost;
+                purchaseList.push({ count: count, pack: pack });
+            }
+        }
+
+        // 2. Gestione Intelligente del Residuo (Remainder)
+        if (remaining > 0) {
+            // A: Calcola costo riempendo con pacchetti piccoli (es. 10+10+5...)
+            let greedyRemainderCost = 0;
+            let tempRem = remaining;
+            
+            // Simuliamo il costo "Greedy" (solo per confronto)
+            for (let i = currentPacks.length - 1; i >= 0; i--) {
+                 // Semplificazione per stima: usiamo i piccoli per coprire
+                 // In realtà per il confronto basta sapere il costo del "prossimo pacchetto grande"
+            }
+
+            // --- FIX LOGICA: Confronto Diretto ---
+            // Troviamo il pacchetto più piccolo che copre *tutto* il residuo in un colpo solo
+            let oneShotPack = null;
+            for (let i = currentPacks.length - 1; i >= 0; i--) {
+                if (currentPacks[i].amount >= remaining) {
+                    oneShotPack = currentPacks[i];
+                    break;
+                }
+            }
+            // Se non c'è un pacchetto che copre tutto (residuo enorme), prendiamo il più grande (default)
+            if (!oneShotPack) oneShotPack = currentPacks[0];
+
+            // Calcoliamo costo "spiccioli" (Greedy)
+            let smallComboCost = 0;
+            let smallComboList = [];
+            let r = remaining;
+             for (let pack of currentPacks) {
+                 // Non usiamo questo loop per i pacchetti che superano il residuo, 
+                 // vogliamo solo riempirlo esattamente o con piccoli surplus
+                if (r <= 0) break;
+             }
+            
+            // Eseguiamo un riempimento Greedy "reale" sul residuo
+            // Cerchiamo di coprire il residuo usando i pacchetti dal più grande al più piccolo CHE CI STIANO DENTRO
+            // E poi l'ultimo pezzettino col più piccolo disponibile.
+            // Ma per semplicità ed efficienza: 
+            // Confrontiamo semplicemente il costo del OneShotPack con il costo di riempirlo a suon di 4.99/9.99
+            
+            // Calcolo costo riempimento con pacchetti "piccoli" (iterativo inverso)
+            // In realtà il metodo più sicuro è: Prendi OneShotPack. 
+            // Se OneShotPack.cost < (Costo Greedy + 1€), usa OneShotPack.
+            
+            // Calcoliamo costo Greedy del residuo
+            let gCost = 0;
+            let gRem = remaining;
+            let gList = []; // Solo per debug/logica
+            
+            // Greedy puro sul residuo
+            for (let pack of currentPacks) {
+                 if (gRem >= pack.amount) {
+                     let c = Math.floor(gRem / pack.amount);
+                     gRem -= c * pack.amount;
+                     gCost += c * pack.cost;
+                 }
+            }
+            if (gRem > 0) {
+                // Copri l'ultimo pezzetto con il più piccolo disponibile
+                // (O quello che basta, iterando dal basso)
+                for (let i = currentPacks.length - 1; i >= 0; i--) {
+                    if (currentPacks[i].amount >= gRem) {
+                         gCost += currentPacks[i].cost;
+                         break;
+                    }
+                }
+            }
+
+            // DECISIONE: 
+            // Se il costo del pacchetto singolo che copre tutto è minore o uguale a (Costo Greedy + 1.00€)
+            // Allora conviene il pacchetto singolo (perché dà più MO e pulisce la lista)
+            if (oneShotPack.cost <= (gCost + 1.0)) {
+                totalCost += oneShotPack.cost;
+                purchaseList.push({ count: 1, pack: oneShotPack });
+            } else {
+                // Usa il metodo Greedy (aggiungi i pacchetti alla lista reale)
+                 let r2 = remaining;
+                 for (let pack of currentPacks) {
+                    if (r2 >= pack.amount) {
+                        const count = Math.floor(r2 / pack.amount);
+                        r2 -= count * pack.amount;
+                        totalCost += count * pack.cost;
+                        purchaseList.push({ count: count, pack: pack });
+                    }
+                }
+                if (r2 > 0) {
+                     for (let i = currentPacks.length - 1; i >= 0; i--) {
+                        if (currentPacks[i].amount >= r2) {
+                            totalCost += currentPacks[i].cost;
+                            purchaseList.push({ count: 1, pack: currentPacks[i] });
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- RENDER ---
+        // Aggrega pacchetti uguali nella visualizzazione
+        let displayMap = {};
+        purchaseList.forEach(item => {
+            const key = item.pack.amount;
+            if (!displayMap[key]) displayMap[key] = { count: 0, pack: item.pack };
+            displayMap[key].count += item.count;
+        });
+
+        let html = '';
+        // Ordina visualizzazione per importo decrescente
+        Object.values(displayMap).sort((a,b) => b.pack.amount - a.pack.amount).forEach(item => {
+             html += `
+            <div class="flex justify-between">
+                <span>${item.count}x Pack ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} MO</span>
+                <span class="text-white">${(item.count * item.pack.cost).toFixed(2)} €</span>
+            </div>`;
+        });
+
+        document.getElementById('euroList').innerHTML = html;
+        document.getElementById('euroTotal').innerText = totalCost.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' });
+    }
+</script>
+
+</body>
+</html>
