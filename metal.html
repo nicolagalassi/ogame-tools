@@ -178,7 +178,10 @@
         };
 
         const inputStyle = "w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono";
+        
+        // MODIFICA QUI: Aggiunta altezza minima e allineamento per gestire testo su due righe
         const labelStyle = "block text-[11px] uppercase font-bold text-gray-500 mb-1";
+        const lfLabelStyle = "block text-[11px] uppercase font-bold text-gray-500 mb-1 min-h-[32px] flex items-end pb-1";
 
         return `
             <div class="bg-ogame-panel border border-gray-700/50 rounded-xl p-5 hover:border-ogame-accent/50 transition duration-300 relative group flex flex-col shadow-lg card" id="card-${id}">
@@ -243,13 +246,13 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3 items-end">
                         <div>
-                            <label class="${labelStyle}">Magma Forge (Rock'tal)</label>
+                            <label class="${lfLabelStyle}">Magma Forge (Rock'tal)</label>
                             <input type="number" class="p-magma ${inputStyle}" value="${v.magma}" placeholder="0" onchange="calculateAll()">
                         </div>
                         <div>
-                            <label class="${labelStyle}">High Energy Smelting (Humans)</label>
+                            <label class="${lfLabelStyle}">High Energy Smelting (Humans)</label>
                             <input type="number" class="p-human ${inputStyle}" value="${v.human}" placeholder="0" onchange="calculateAll()">
                         </div>
                     </div>
