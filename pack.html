@@ -21,6 +21,7 @@
                             danger: '#da3633',   
                             warning: '#d29922', 
                             dm: '#7834bc', 
+                            money: '#2ea043', 
                             text: '#c9d1d9'
                         }
                     },
@@ -50,7 +51,7 @@
                     Pack <span class="text-ogame-accent">Calculator</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base">
-                    Converti costi in MSE e calcola il fabbisogno di pacchetti risorse e Materia Oscura.
+                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
                 </p>
             </div>
             
@@ -205,12 +206,40 @@
                     </div>
                 </div>
 
+                <div class="bg-ogame-panel border border-ogame-money/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-ogame-money"></div>
+                    
+                    <h3 class="text-sm font-bold text-gray-300 uppercase mb-4 flex items-center gap-2">
+                        <span class="text-ogame-money text-lg">€</span> Stima Costo (Arrotondato)
+                    </h3>
+
+                    <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]">
+                        </div>
+
+                    <div class="border-t border-gray-700/50 my-3"></div>
+                    
+                    <div class="flex justify-between items-end">
+                         <span class="text-xs text-gray-500 uppercase font-bold">Totale</span>
+                         <span id="euroTotal" class="text-2xl font-bold text-ogame-money">0 €</span>
+                    </div>
+                </div>
+
             </div>
 
         </div>
     </div>
 
 <script>
+    // PREZZI ARROTONDATI COME RICHIESTO
+    const moPacks = [
+        { cost: 200, amount: 5100000 },
+        { cost: 100, amount: 2525000 },
+        { cost: 50, amount: 1140000 },
+        { cost: 25, amount: 480000 },
+        { cost: 10, amount: 150000 },
+        { cost: 5, amount: 60000 }
+    ];
+
     function formatInput(input) {
         let value = input.value.replace(/\D/g, '');
         if (value === '') { input.value = ''; return; }
@@ -259,7 +288,8 @@
         const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
         const packVal = getRawValue('packValue');
         const isPackDiscount = document.getElementById('moDiscount').checked; 
-        
+        const bonusPercent = parseInt(document.getElementById('moBonus').value);
+
         const cryInMet = cry * (rM / rC);
         const deutInMet = deut * (rM / rD);
         const totalMSE = met + cryInMet + deutInMet;
@@ -274,6 +304,130 @@
         document.getElementById('packsNeeded').innerText = new Intl.NumberFormat('it-IT').format(packs);
         document.getElementById('moTotal').innerText = new Intl.NumberFormat('it-IT').format(totalMONeeded);
         document.getElementById('moPerPackLabel').innerText = `${new Intl.NumberFormat('it-IT').format(moPerPackCost)} MO / pack`;
+
+        calculateSmartEuro(totalMONeeded, bonusPercent);
+    }
+
+    // --- LOGICA EURO ARROTONDATA & OTTIMIZZATA ---
+    function calculateSmartEuro(targetMO, bonusPercent) {
+        if (targetMO <= 0) {
+            document.getElementById('euroList').innerHTML = '<div class="text-center italic opacity-50">Nessun costo</div>';
+            document.getElementById('euroTotal').innerText = '0 €';
+            return;
+        }
+
+        const bonusMultiplier = 1 + (bonusPercent / 100);
+        
+        // 1. Applica Bonus ai pacchetti (Valori REALI con bonus)
+        let currentPacks = moPacks.map(p => ({
+            cost: p.cost,
+            amount: Math.floor(p.amount * bonusMultiplier)
+        }));
+
+        let remaining = targetMO;
+        let totalCost = 0;
+        let purchaseList = [];
+
+        // 2. CICLO DI RIEMPIMENTO OTTIMIZZATO
+        // Per ogni iterazione, decidiamo se riempire "Greedy" (col pacchetto che ci sta dentro)
+        // o se conviene fare un "Upgrade" (prendere il pacchetto più grande che copre tutto il residuo).
+        
+        // Prima riempiamo con i pacchetti massimi (es. se servono 10M, prendiamo 1x200 da 5.1M)
+        // Finché il pacchetto più grande è MINORE del rimanente, lo prendiamo sicuro.
+        for (let pack of currentPacks) {
+            if (remaining >= pack.amount) {
+                const count = Math.floor(remaining / pack.amount);
+                remaining -= count * pack.amount;
+                totalCost += count * pack.cost;
+                purchaseList.push({ count: count, pack: pack });
+            }
+        }
+
+        // 3. GESTIONE RESIDUO (Smart Decision)
+        if (remaining > 0) {
+            // A. Calcola costo riempiendo con "spiccioli" (Greedy sul residuo)
+            let greedyCost = 0;
+            let remTemp = remaining;
+            
+            // Simuliamo riempimento greedy
+            for (let pack of currentPacks) {
+                if (remTemp > 0) {
+                    // Quanti ne servono per coprire remTemp?
+                    // Qui usiamo logica inversa: pack.amount copre parte di remTemp
+                    // Se pack.amount > remTemp, ne basta 1 e ci fermiamo (per questo pack)
+                    // Ma l'approccio corretto greedy è: riempi quanto puoi col grande, poi scendi.
+                    if (pack.amount <= remTemp) {
+                         let c = Math.floor(remTemp / pack.amount);
+                         greedyCost += c * pack.cost;
+                         remTemp -= c * pack.amount;
+                    }
+                }
+            }
+            // Se avanza ancora qualcosa (minore dell'ultimo pack da 5€), aggiungi 5€
+            if (remTemp > 0) {
+                greedyCost += 5; // Costo minimo (pack più piccolo)
+            }
+
+            // B. Calcola costo comprando UN SINGOLO pacchetto più grande che copra TUTTO il residuo
+            let oneShotPack = null;
+            // Cerchiamo dal basso verso l'alto il primo che copre 'remaining'
+            for (let i = currentPacks.length - 1; i >= 0; i--) {
+                if (currentPacks[i].amount >= remaining) {
+                    oneShotPack = currentPacks[i];
+                    break;
+                }
+            }
+            if (!oneShotPack) oneShotPack = currentPacks[0]; // Fallback al massimo
+
+            // C. CONFRONTO: Se OneShot costa UGUALE o MENO del Greedy, VINCE OneShot.
+            // Esempio: Greedy 4x25€ = 100€. OneShot 1x100€ = 100€.
+            // 100 <= 100 -> True. Vince OneShot.
+            if (oneShotPack.cost <= greedyCost) {
+                totalCost += oneShotPack.cost;
+                purchaseList.push({ count: 1, pack: oneShotPack });
+            } else {
+                // Altrimenti eseguiamo il riempimento greedy reale
+                let finalRem = remaining;
+                for (let pack of currentPacks) {
+                    if (finalRem >= pack.amount) {
+                         let c = Math.floor(finalRem / pack.amount);
+                         finalRem -= c * pack.amount;
+                         totalCost += c * pack.cost;
+                         purchaseList.push({ count: c, pack: pack });
+                    }
+                }
+                if (finalRem > 0) {
+                    // Aggiungi il più piccolo che copre l'ultimo avanzo
+                     for (let i = currentPacks.length - 1; i >= 0; i--) {
+                        if (currentPacks[i].amount >= finalRem) {
+                            totalCost += currentPacks[i].cost;
+                            purchaseList.push({ count: 1, pack: currentPacks[i] });
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        // RENDER
+        let displayMap = {};
+        purchaseList.forEach(item => {
+            const key = item.pack.cost; // Uso costo come chiave univoca
+            if (!displayMap[key]) displayMap[key] = { count: 0, pack: item.pack };
+            displayMap[key].count += item.count;
+        });
+
+        let html = '';
+        Object.values(displayMap).sort((a,b) => b.pack.cost - a.pack.cost).forEach(item => {
+             html += `
+            <div class="flex justify-between">
+                <span>${item.count}x Pack ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} MO</span>
+                <span class="text-ogame-money font-bold">${(item.count * item.pack.cost)} €</span>
+            </div>`;
+        });
+
+        document.getElementById('euroList').innerHTML = html;
+        document.getElementById('euroTotal').innerText = totalCost + " €";
     }
 
     // --- CARICAMENTO AUTOMATICO DAL METAL CALC ---
@@ -282,17 +436,13 @@
         if (cachedMetal) {
             const rawVal = parseInt(cachedMetal);
             if (rawVal > 0) {
-                // Formatta il numero con i punti
                 const fmt = new Intl.NumberFormat('it-IT').format(rawVal);
                 document.getElementById('packValue').value = fmt;
-                
-                // Opzionale: Mostra un avviso che è stato caricato
                 const label = document.getElementById('packSourceLabel');
                 if(label) label.innerText = "Caricato automaticamente dal Metal Calculator.";
                 if(label) label.classList.add("text-ogame-success");
             }
         }
-        // Avvia comunque un calcolo iniziale (magari campi vuoti)
         calculate();
     }
 </script>
