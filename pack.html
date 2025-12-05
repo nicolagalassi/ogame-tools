@@ -147,7 +147,7 @@
                                 class="w-full bg-[#0d1014] border border-ogame-warning/50 rounded-lg p-3 text-ogame-warning font-bold focus:border-ogame-warning outline-none text-center text-lg shadow-[0_0_10px_rgba(210,153,34,0.1)]">
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-mono">MET</div>
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-2 text-center">Prod. giornaliera dal Metal Calculator.</p>
+                        <p class="text-[10px] text-gray-500 mt-2 text-center" id="packSourceLabel">Prod. giornaliera dal Metal Calculator.</p>
                     </div>
                 </div>
             </div>
@@ -274,6 +274,26 @@
         document.getElementById('packsNeeded').innerText = new Intl.NumberFormat('it-IT').format(packs);
         document.getElementById('moTotal').innerText = new Intl.NumberFormat('it-IT').format(totalMONeeded);
         document.getElementById('moPerPackLabel').innerText = `${new Intl.NumberFormat('it-IT').format(moPerPackCost)} MO / pack`;
+    }
+
+    // --- CARICAMENTO AUTOMATICO DAL METAL CALC ---
+    window.onload = function() {
+        const cachedMetal = localStorage.getItem('ogameDailyMetal');
+        if (cachedMetal) {
+            const rawVal = parseInt(cachedMetal);
+            if (rawVal > 0) {
+                // Formatta il numero con i punti
+                const fmt = new Intl.NumberFormat('it-IT').format(rawVal);
+                document.getElementById('packValue').value = fmt;
+                
+                // Opzionale: Mostra un avviso che è stato caricato
+                const label = document.getElementById('packSourceLabel');
+                if(label) label.innerText = "Caricato automaticamente dal Metal Calculator.";
+                if(label) label.classList.add("text-ogame-success");
+            }
+        }
+        // Avvia comunque un calcolo iniziale (magari campi vuoti)
+        calculate();
     }
 </script>
 
