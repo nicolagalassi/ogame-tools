@@ -32,9 +32,31 @@
         }
     </script>
     <style>
-        /* Nasconde le frecce negli input number */
         input[type=number]::-webkit-inner-spin-button { opacity: 0; }
         input[type=number]:hover::-webkit-inner-spin-button { opacity: 1; }
+        
+        /* Tooltip per il copia */
+        .tooltip {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+        .group:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="bg-ogame-bg text-ogame-text font-sans pb-32 min-h-screen">
@@ -98,7 +120,7 @@
                         <select id="playerClass" onchange="calculateAll()" 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition">
                             <option value="collector">Collector (+25%)</option>
-                            <option value="other">Explorer/General</option>
+                            <option value="other">Explor/General</option>
                         </select>
                     </div>
                 </div>
@@ -159,27 +181,30 @@
                 <div class="text-2xl md:text-3xl font-bold text-ogame-accent drop-shadow-[0_0_15px_rgba(51,153,255,0.4)] font-mono" id="resHourly">0</div>
             </div>
             <div class="h-10 w-px bg-gray-700/50"></div>
-            <div class="text-center w-1/2">
+            <div class="text-center w-1/2 flex flex-col items-center">
                 <div class="text-[9px] md:text-[10px] text-gray-400 uppercase tracking-widest mb-1 font-bold text-ogame-warning">Pacchetto (24h)</div>
-                <div class="text-2xl md:text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(210,153,34,0.4)] font-mono" id="resDaily">0</div>
+                <div class="flex items-center gap-2 relative group cursor-pointer" onclick="copyToClipboard()" title="Copia Valore">
+                    <div class="text-2xl md:text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(210,153,34,0.4)] font-mono" id="resDaily">0</div>
+                    <svg class="w-5 h-5 text-gray-500 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                    <span class="tooltip" id="copyTooltip">Copia</span>
+                </div>
             </div>
         </div>
     </div>
 
 <script>
     let planetCounter = 0;
+    let currentTotalDaily = 0; // Per il copia incolla
 
     // --- TEMPLATE CARD (JS) ---
     function getPlanetHTML(id, data = null) {
         const v = data || {
             metal: 30, crystal: 0, deuterium: 0, 
             pos: 8, item: 0, magma: 0, human: 0,
-            crawlers: 0 // Default a 0 o al valore salvato
+            crawlers: 0
         };
 
         const inputStyle = "w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono";
-        
-        // MODIFICA QUI: Aggiunta altezza minima e allineamento per gestire testo su due righe
         const labelStyle = "block text-[11px] uppercase font-bold text-gray-500 mb-1";
         const lfLabelStyle = "block text-[11px] uppercase font-bold text-gray-500 mb-1 min-h-[32px] flex items-end pb-1";
 
@@ -285,7 +310,6 @@
     }
 
     // --- LOGIC ---
-
     function addPlanet() {
         planetCounter++;
         const container = document.getElementById('planetList');
@@ -390,25 +414,20 @@
             
             if (itemPerc > 0) { bonuses.push({name: "Item", val: itemPerc}); totalPercent += itemPerc; }
             
-            // Rock'tal Building
             if (magmaLvl > 0) { const val = magmaLvl * 2; bonuses.push({name: `Magma (${magmaLvl})`, val: val}); totalPercent += val; }
             
-            // Human Building (High Energy Smelting)
             if (humanLvl > 0) { const val = humanLvl * 1.5; bonuses.push({name: `Smelter (${humanLvl})`, val: val}); totalPercent += val; }
             
             if (globalData.lfGlobalBonus > 0) { bonuses.push({name: "Tech LF", val: globalData.lfGlobalBonus}); totalPercent += globalData.lfGlobalBonus; }
             
-            // --- CRAWLER LOGIC ---
+            // Crawler Logic
             const mineSum = metalLvl + crystalLvl + deuteriumLvl;
             const maxCrawlers = mineSum * 8;
             
-            // Update UI Max Display
             card.querySelector('.p-max-crawlers-disp').innerText = maxCrawlers;
-            
-            // Calcola effettivi
             let activeCrawlers = Math.min(inputCrawlers, maxCrawlers);
-            
             const feedbackEl = card.querySelector('.p-crawler-feedback');
+            
             if (inputCrawlers > maxCrawlers) {
                 feedbackEl.innerHTML = `<span class="text-ogame-warning">Limitati a ${maxCrawlers} (Cap Miniere)</span>`;
             } else if (inputCrawlers > 0) {
@@ -430,43 +449,38 @@
 
             totalHourly += planetTotal;
 
-            // F. Render Breakdown
-            let detailsHTML = `
-                <div class="flex justify-between text-gray-500">
-                    <span>Base (+${posPercLabel}%)</span> 
-                    <span>${formatNum(mineBase)}</span>
-                </div>
-                <div class="flex justify-between text-gray-600 text-[10px] mb-2">
-                    <span>Naturale</span> 
-                    <span>${formatNum(naturalProd)}</span>
-                </div>
-                <div class="border-t border-gray-700 my-2"></div>
-            `;
-            
+            // F. Breakdown HTML (Omitted for brevity, logic remains same)
+            let detailsHTML = `<div class="flex justify-between text-gray-500"><span>Base (+${posPercLabel}%)</span><span>${formatNum(mineBase)}</span></div>
+                               <div class="flex justify-between text-gray-600 text-[10px] mb-2"><span>Naturale</span><span>${formatNum(naturalProd)}</span></div>
+                               <div class="border-t border-gray-700 my-2"></div>`;
             bonuses.forEach(b => {
                 const val = Math.floor(mineBase * (b.val / 100));
                 const percDisplay = Number(b.val).toFixed(2).replace(/[.,]00$/, ""); 
-                detailsHTML += `
-                <div class="flex justify-between text-gray-400">
-                    <span>${b.name} <span class="text-gray-600 text-[9px]">(+${percDisplay}%)</span></span> 
-                    <span class="text-ogame-success">+${formatNum(val)}</span>
-                </div>`;
+                detailsHTML += `<div class="flex justify-between text-gray-400"><span>${b.name} <span class="text-gray-600 text-[9px]">(+${percDisplay}%)</span></span><span class="text-ogame-success">+${formatNum(val)}</span></div>`;
             });
-
-            detailsHTML += `
-                <div class="border-t border-gray-700 mt-2 pt-2 flex justify-between font-bold text-ogame-accent text-sm">
-                    <span>TOTALE</span>
-                    <span>${formatNum(planetTotal)}</span>
-                </div>
-            `;
-            
+            detailsHTML += `<div class="border-t border-gray-700 mt-2 pt-2 flex justify-between font-bold text-ogame-accent text-sm"><span>TOTALE</span><span>${formatNum(planetTotal)}</span></div>`;
             document.getElementById(`breakdown-${pid}`).innerHTML = detailsHTML;
         });
 
+        currentTotalDaily = totalHourly * 24;
+        
         document.getElementById('resHourly').innerText = formatNum(totalHourly);
-        document.getElementById('resDaily').innerText = formatNum(totalHourly * 24);
+        document.getElementById('resDaily').innerText = formatNum(currentTotalDaily);
+
+        // --- SALVATAGGIO PER PACK CALCULATOR ---
+        localStorage.setItem('ogameDailyMetal', currentTotalDaily);
+        // ---------------------------------------
 
         saveToLocalStorage();
+    }
+
+    function copyToClipboard() {
+        if (!currentTotalDaily) return;
+        navigator.clipboard.writeText(Math.floor(currentTotalDaily).toString()).then(() => {
+            const tooltip = document.getElementById('copyTooltip');
+            tooltip.innerText = "Copiato!";
+            setTimeout(() => tooltip.innerText = "Copia", 2000);
+        });
     }
 
     // --- STORAGE ---
