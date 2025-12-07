@@ -35,7 +35,6 @@
         input[type=number]::-webkit-inner-spin-button { opacity: 0; }
         input[type=number]:hover::-webkit-inner-spin-button { opacity: 1; }
         
-        /* Tooltip per il copia */
         .tooltip {
             visibility: hidden;
             background-color: #333;
@@ -44,7 +43,7 @@
             border-radius: 6px;
             padding: 5px 10px;
             position: absolute;
-            z-index: 1;
+            z-index: 10;
             bottom: 125%;
             left: 50%;
             transform: translateX(-50%);
@@ -52,6 +51,7 @@
             transition: opacity 0.3s;
             font-size: 10px;
             white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
         .group:hover .tooltip {
             visibility: visible;
@@ -159,6 +159,32 @@
             </div>
         </div>
 
+        <div class="bg-[#11161d] border border-ogame-accent/30 rounded-xl p-4 mb-8 shadow-lg flex flex-col md:flex-row items-center gap-4">
+            <div class="flex items-center gap-2 text-ogame-accent whitespace-nowrap">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span class="font-bold text-sm uppercase tracking-wide">Modifica Massiva</span>
+            </div>
+            
+            <div class="flex-grow grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+                <select id="bulkTarget" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none">
+                    <option value="metal">Miniera Metallo</option>
+                    <option value="crystal">Miniera Cristallo</option>
+                    <option value="deuterium">Miniera Deuterio</option>
+                    <option value="item">Item Metallo (%)</option>
+                    <option value="pos">Posizione (1-15)</option>
+                    <option value="magma">Magma Forge</option>
+                    <option value="human">HE Smelting (Umani)</option>
+                    <option value="crawlers">Crawler Assegnati</option>
+                </select>
+                
+                <input type="number" id="bulkValue" placeholder="Nuovo Valore" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none font-mono">
+                
+                <button onclick="applyBulk()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm transition shadow-md">
+                    Applica a Tutti
+                </button>
+            </div>
+        </div>
+
         <div class="flex flex-row justify-between items-center mb-6 gap-4">
             <h2 class="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
                 Gestione Pianeti
@@ -194,7 +220,7 @@
 
 <script>
     let planetCounter = 0;
-    let currentTotalDaily = 0; // Per il copia incolla
+    let currentTotalDaily = 0; 
 
     // --- TEMPLATE CARD (JS) ---
     function getPlanetHTML(id, data = null) {
@@ -337,6 +363,44 @@
     function updateBadge() {
         const count = document.querySelectorAll('.card').length;
         document.getElementById('planetCountBadge').innerText = count;
+    }
+
+    // --- BULK UPDATE LOGIC ---
+    function applyBulk() {
+        const target = document.getElementById('bulkTarget').value;
+        const rawValue = document.getElementById('bulkValue').value;
+        const value = parseInt(rawValue) || 0;
+
+        // Se l'input è vuoto e non è 0, fermiamoci (opzionale)
+        if (rawValue === "") return;
+
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            let selector = '';
+            
+            // Map the select values to CSS classes
+            switch(target) {
+                case 'metal': selector = '.p-metal'; break;
+                case 'crystal': selector = '.p-crystal'; break;
+                case 'deuterium': selector = '.p-deuterium'; break;
+                case 'item': selector = '.p-item'; break;
+                case 'pos': selector = '.p-pos'; break;
+                case 'magma': selector = '.p-magma'; break;
+                case 'human': selector = '.p-human'; break;
+                case 'crawlers': selector = '.p-crawlers-input'; break;
+            }
+
+            if (selector) {
+                const input = card.querySelector(selector);
+                if (input) {
+                    input.value = value;
+                }
+            }
+        });
+
+        // Dopo aver aggiornato il DOM, ricalcoliamo tutto
+        calculateAll();
     }
 
     function extractPlanetData(cardElement) {
