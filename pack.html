@@ -155,7 +155,7 @@
 
             <div class="lg:col-span-1 space-y-4">
                 
-                <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl sticky top-6 flex flex-col justify-center min-h-[200px]">
+                <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl sticky top-6 flex flex-col justify-center min-h-[220px]">
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-warning"></div>
                     
                     <div class="text-center mb-6">
@@ -180,11 +180,13 @@
                                 <svg class="w-4 h-4 text-ogame-dm" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6V7z"/><path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1v-2H2a1 1 0 110-2h1V7a2 2 0 012-2h2V2zM5 7v6h10V7H5z" clip-rule="evenodd"/></svg>
                                 Costo MO
                             </h3>
-                            <label class="inline-flex items-center cursor-pointer">
-                                <input type="checkbox" id="moDiscount" onchange="calculate()" class="sr-only peer">
-                                <div class="relative w-9 h-5 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-ogame-dm"></div>
-                                <span class="ms-2 text-[9px] font-medium text-gray-400 peer-checked:text-white">Sconto Pack (-30%)</span>
-                            </label>
+                            
+                            <div class="flex items-center gap-2 bg-[#0d1014] px-2 py-1 rounded border border-gray-700">
+                                <span class="text-[10px] text-gray-400 uppercase font-bold">Sconto Shop:</span>
+                                <input type="number" id="shopDiscount" value="0" min="0" max="90" onchange="calculate()" 
+                                    class="bg-transparent text-xs text-white outline-none text-right font-bold w-8 focus:ring-0">
+                                <span class="text-[10px] text-gray-500">%</span>
+                            </div>
                         </div>
                         
                         <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
@@ -212,10 +214,10 @@
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-money"></div>
                     
                     <h3 class="text-sm font-bold text-gray-300 uppercase mb-4 flex items-center gap-2">
-                        <span class="text-ogame-money text-lg">€</span> Shopping List Ottimizzata
+                        <span class="text-ogame-money text-lg">€</span> Stima Costo Ottimizzato
                     </h3>
 
-                    <div id="euroList" class="space-y-3 text-sm text-gray-300 font-mono mb-4 min-h-[40px]">
+                    <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]">
                     </div>
 
                     <div class="border-t border-gray-700/50 my-3"></div>
@@ -223,10 +225,6 @@
                     <div class="flex justify-between items-end">
                          <span class="text-xs text-gray-500 uppercase font-bold">Totale</span>
                          <span id="euroTotal" class="text-2xl font-bold text-ogame-money">0 €</span>
-                    </div>
-
-                     <div class="mt-2 text-center text-[10px] text-gray-500 italic">
-                        MO Ottenuta: <span id="moGained" class="text-gray-300 font-bold">0</span>
                     </div>
                 </div>
 
@@ -236,7 +234,7 @@
     </div>
 
 <script>
-    // PREZZI ARROTONDATI BASE (E DATI OGAME UFFICIALI)
+    // PREZZI ARROTONDATI BASE
     const basePacks = [
         { cost: 200, amount: 5100000 },
         { cost: 100, amount: 2525000 },
@@ -268,7 +266,7 @@
         document.getElementById('costCrystal').value = '';
         document.getElementById('costDeut').value = '';
         document.getElementById('pasteArea').value = '';
-        document.getElementById('moDiscount').checked = false; 
+        document.getElementById('shopDiscount').value = "0"; 
         document.getElementById('moBonus').value = "0"; 
         calculate();
     }
@@ -293,7 +291,9 @@
         const rC = parseFloat(document.getElementById('rateCry').value) || 2;
         const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
         const packVal = getRawValue('packValue');
-        const isPackDiscount = document.getElementById('moDiscount').checked; 
+        
+        // SCONTO PERSONALIZZATO
+        const shopDiscount = parseFloat(document.getElementById('shopDiscount').value) || 0;
         const bonusPercent = parseInt(document.getElementById('moBonus').value);
 
         const cryInMet = cry * (rM / rC);
@@ -303,7 +303,10 @@
         let packs = 0;
         if (packVal > 0 && totalMSE > 0) packs = Math.ceil(totalMSE / packVal);
 
-        const moPerPackCost = isPackDiscount ? 42000 : 60000;
+        // CALCOLO DINAMICO COSTO PACCHETTO
+        const basePackPrice = 60000;
+        const moPerPackCost = basePackPrice * (1 - (shopDiscount / 100));
+        
         const totalMONeeded = packs * moPerPackCost;
 
         document.getElementById('totalMSE').innerText = new Intl.NumberFormat('it-IT').format(Math.ceil(totalMSE));
@@ -314,7 +317,7 @@
         calculateAlgorithm(totalMONeeded, bonusPercent);
     }
 
-    // --- ALGORITMO RICORSIVO OTTIMIZZATO (Ceiling vs Floor) ---
+    // --- ALGORITMO OTTIMIZZATO (Ceiling vs Floor) ---
     function calculateAlgorithm(targetMO, bonusPercent) {
         if (targetMO <= 0) {
             renderResult(0, [], 0);
@@ -324,86 +327,86 @@
         const bonusMult = 1 + (bonusPercent / 100);
         const currentPacks = basePacks.map(p => ({
             cost: p.cost,
-            amount: Math.floor(p.amount * bonusMult),
-            originalAmount: p.amount
+            amount: Math.floor(p.amount * bonusMult)
         }));
 
         let bestSolution = findBestCombination(targetMO, currentPacks);
-        renderResult(bestSolution.cost, bestSolution.list, bestSolution.totalMO);
+        renderResult(bestSolution.totalCost, bestSolution.packList);
     }
 
     function findBestCombination(target, packs) {
-        // Caso Base: Target raggiunto o nessun pacchetto rimasto
-        if (target <= 0) return { cost: 0, list: [], totalMO: 0 };
-        if (packs.length === 0) return { cost: Infinity, list: [], totalMO: 0 };
+        let currentTarget = target;
+        let totalCost = 0;
+        let packList = [];
 
-        let currentPack = packs[0]; // Pacchetto più grande disponibile
-        let nextPacks = packs.slice(1);
+        for (let i = 0; i < packs.length; i++) {
+            let pack = packs[i];
 
-        // --- STRADA A: CEILING (Chiudo Subito) ---
-        // Compro abbastanza di QUESTO pacchetto per coprire tutto quello che manca.
-        let countA = Math.ceil(target / currentPack.amount);
-        let costA = countA * currentPack.cost;
-        let moA = countA * currentPack.amount;
-        let listA = [{ count: countA, pack: currentPack }];
+            if (i === packs.length - 1) {
+                let count = Math.ceil(currentTarget / pack.amount);
+                if (count > 0) {
+                    totalCost += count * pack.cost;
+                    packList.push({ count: count, pack: pack });
+                }
+                break;
+            }
 
-        // --- STRADA B: FLOOR + NEXT (Riempio e delego) ---
-        // Compro il massimo numero intero di questo pacchetto che ci sta dentro
-        // E lascio il resto ai pacchetti più piccoli.
-        // (Solo se ci sono pacchetti più piccoli, altrimenti Floor == Ceiling)
-        
-        if (nextPacks.length === 0) {
-            return { cost: costA, list: listA, totalMO: moA };
+            let ceilingCount = Math.ceil(currentTarget / pack.amount);
+            let ceilingCost = ceilingCount * pack.cost;
+
+            let floorCount = Math.floor(currentTarget / pack.amount);
+            let remainder = currentTarget - (floorCount * pack.amount);
+            
+            if (remainder === 0) {
+                totalCost += floorCount * pack.cost;
+                if (floorCount > 0) packList.push({ count: floorCount, pack: pack });
+                break;
+            }
+
+            let smallerPacks = packs.slice(i + 1);
+            let remainderSolution = solveRemainder(remainder, smallerPacks);
+            
+            let floorPathCost = (floorCount * pack.cost) + remainderSolution.cost;
+
+            if (ceilingCost <= floorPathCost) {
+                totalCost += ceilingCost;
+                if (ceilingCount > 0) packList.push({ count: ceilingCount, pack: pack });
+                break; 
+            } else {
+                if (floorCount > 0) {
+                    totalCost += floorCount * pack.cost;
+                    packList.push({ count: floorCount, pack: pack });
+                }
+                currentTarget = remainder; 
+            }
         }
 
-        let countB = Math.floor(target / currentPack.amount);
-        let remainder = target - (countB * currentPack.amount);
-        
-        let costB_Partial = countB * currentPack.cost;
-        let moB_Partial = countB * currentPack.amount;
-        
-        // Ricorsione sul resto
-        let subResult = findBestCombination(remainder, nextPacks);
-        
-        let costB = costB_Partial + subResult.cost;
-        let moB = moB_Partial + subResult.totalMO;
-        
-        // Costruiamo la lista B
-        let listB = [];
-        if (countB > 0) listB.push({ count: countB, pack: currentPack });
-        listB = listB.concat(subResult.list);
-
-        // --- IL CONFRONTO ---
-        // Se la Strada A (Chiudo con pacchetto grande) costa MENO o UGUALE alla Strada B (spezzatino)
-        // Allora scelgo la A. Perché a parità di prezzo (es. 10€ vs 2x5€) il pacchetto grande è meglio.
-        if (costA <= costB) {
-            return { cost: costA, list: listA, totalMO: moA };
-        } else {
-            return { cost: costB, list: listB, totalMO: moB };
-        }
+        return { totalCost, packList };
     }
 
-    function renderResult(cost, list, moGained) {
-        document.getElementById('euroTotal').innerText = cost + " €";
-        document.getElementById('moGained').innerText = new Intl.NumberFormat('it-IT').format(moGained);
+    function solveRemainder(amount, availablePacks) {
+        if (amount <= 0) return { cost: 0 };
+        if (availablePacks.length === 1) {
+            let p = availablePacks[0];
+            return { cost: Math.ceil(amount / p.amount) * p.cost };
+        }
 
-        // Aggreghiamo i risultati per visualizzazione pulita
-        let displayList = [];
-        list.forEach(item => {
-            // Cerca se esiste già
-            let found = displayList.find(x => x.pack.cost === item.pack.cost);
-            if(found) {
-                found.count += item.count;
-            } else {
-                displayList.push({ count: item.count, pack: item.pack });
-            }
-        });
+        let pack = availablePacks[0];
+        let ceilingCost = Math.ceil(amount / pack.amount) * pack.cost;
         
-        // Ordiniamo per costo decrescente
-        displayList.sort((a,b) => b.pack.cost - a.pack.cost);
+        let floorCount = Math.floor(amount / pack.amount);
+        let rem = amount - (floorCount * pack.amount);
+        let subRes = solveRemainder(rem, availablePacks.slice(1));
+        let floorPathCost = (floorCount * pack.cost) + subRes.cost;
+
+        return { cost: Math.min(ceilingCost, floorPathCost) };
+    }
+
+    function renderResult(cost, list) {
+        document.getElementById('euroTotal').innerText = cost + " €";
 
         let html = '';
-        displayList.forEach(item => {
+        list.forEach(item => {
              html += `
             <div class="flex justify-between items-center border-b border-gray-800 pb-2 last:border-0">
                 <div class="flex flex-col">
