@@ -486,7 +486,12 @@
             
             // Crawler Logic
             const mineSum = metalLvl + crystalLvl + deuteriumLvl;
-            const maxCrawlers = mineSum * 8;
+            let maxCrawlers = mineSum * 8;
+
+            // LOGICA AGGIUNTA: Se Collector + Geologo -> +10% al cap dei Crawler (Arrotondato per difetto)
+            if (globalData.playerClass === 'collector' && globalData.geologist) {
+                maxCrawlers = Math.floor(maxCrawlers * 1.1);
+            }
             
             card.querySelector('.p-max-crawlers-disp').innerText = maxCrawlers;
             let activeCrawlers = Math.min(inputCrawlers, maxCrawlers);
