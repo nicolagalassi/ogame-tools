@@ -74,20 +74,23 @@
                     <div class="absolute top-0 left-0 w-1 h-full bg-ogame-accent"></div>
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        Importa da OGLight / Info Costruzione
+                        Importa da OGLight (Multi-linea supportato)
                     </h3>
                     
                     <div class="relative">
-                        <textarea id="pasteArea" rows="3" placeholder="Incolla qui la stringa (es: 4.278.266 Metallo | 8.556.532 Cristallo...)" 
+                        <textarea id="pasteArea" rows="4" placeholder="Incolla qui i costi (anche più righe insieme):
+Es: 
+4.764.432 Metallo | 9.528.865 Cristallo
+4.587.520 Metallo | 9.175.040 Cristallo" 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-4 text-sm text-gray-300 focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono resize-none"></textarea>
                         <button onclick="parseString()" class="absolute bottom-3 right-3 px-4 py-1.5 bg-ogame-accent hover:bg-blue-600 text-white text-xs font-bold rounded shadow transition">
-                            ESTRAI DATI
+                            ESTRAI & SOMMA
                         </button>
                     </div>
                 </div>
 
                 <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative">
-                    <h3 class="text-lg font-bold text-white mb-6">Costi Risorse</h3>
+                    <h3 class="text-lg font-bold text-white mb-6">Costi Risorse Totali</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="relative group">
@@ -180,7 +183,6 @@
                                 <svg class="w-4 h-4 text-ogame-dm" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6V7z"/><path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1v-2H2a1 1 0 110-2h1V7a2 2 0 012-2h2V2zM5 7v6h10V7H5z" clip-rule="evenodd"/></svg>
                                 Costo MO
                             </h3>
-                            
                             <div class="flex items-center gap-2 bg-[#0d1014] px-2 py-1 rounded border border-gray-700">
                                 <span class="text-[10px] text-gray-400 uppercase font-bold">Sconto Shop:</span>
                                 <input type="number" id="shopDiscount" value="0" min="0" max="90" onchange="calculate()" 
@@ -218,7 +220,7 @@
                     </h3>
 
                     <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]">
-                    </div>
+                        </div>
 
                     <div class="border-t border-gray-700/50 my-3"></div>
                     
@@ -271,15 +273,43 @@
         calculate();
     }
 
+    // --- NUOVA LOGICA PARSING MULTI-RIGA ---
     function parseString() {
         const text = document.getElementById('pasteArea').value;
-        const matchMet = text.match(/([\d\.]+)\s*Metallo/i);
-        const matchCry = text.match(/([\d\.]+)\s*Cristallo/i);
-        const matchDeut = text.match(/([\d\.]+)\s*Deuterio/i);
+        
+        let totalMet = 0;
+        let totalCry = 0;
+        let totalDeut = 0;
 
-        if (matchMet) document.getElementById('costMetal').value = matchMet[1];
-        if (matchCry) document.getElementById('costCrystal').value = matchCry[1];
-        if (matchDeut) document.getElementById('costDeut').value = matchDeut[1];
+        // Regex con flag 'g' (global) per trovare tutte le occorrenze
+        const regexMet = /([\d\.]+)\s*Metallo/gi;
+        const regexCry = /([\d\.]+)\s*Cristallo/gi;
+        const regexDeut = /([\d\.]+)\s*Deuterio/gi;
+
+        let match;
+
+        // Somma Metallo
+        while ((match = regexMet.exec(text)) !== null) {
+            totalMet += parseInt(match[1].replace(/\./g, '')) || 0;
+        }
+        // Somma Cristallo
+        while ((match = regexCry.exec(text)) !== null) {
+            totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
+        }
+        // Somma Deuterio
+        while ((match = regexDeut.exec(text)) !== null) {
+            totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
+        }
+
+        // Se abbiamo trovato qualcosa, aggiorniamo i campi
+        if (totalMet > 0 || totalCry > 0 || totalDeut > 0) {
+            document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalMet);
+            document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalCry);
+            document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalDeut);
+        } else if (text.trim().length > 0) {
+            alert("Nessuna risorsa trovata. Assicurati che il testo contenga 'Metallo', 'Cristallo' o 'Deuterio'.");
+        }
+
         calculate();
     }
 
@@ -292,7 +322,6 @@
         const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
         const packVal = getRawValue('packValue');
         
-        // SCONTO PERSONALIZZATO
         const shopDiscount = parseFloat(document.getElementById('shopDiscount').value) || 0;
         const bonusPercent = parseInt(document.getElementById('moBonus').value);
 
@@ -303,7 +332,6 @@
         let packs = 0;
         if (packVal > 0 && totalMSE > 0) packs = Math.ceil(totalMSE / packVal);
 
-        // CALCOLO DINAMICO COSTO PACCHETTO
         const basePackPrice = 60000;
         const moPerPackCost = basePackPrice * (1 - (shopDiscount / 100));
         
@@ -314,20 +342,19 @@
         document.getElementById('moTotal').innerText = new Intl.NumberFormat('it-IT').format(totalMONeeded);
         document.getElementById('moPerPackLabel').innerText = `${new Intl.NumberFormat('it-IT').format(moPerPackCost)} MO / pack`;
 
-        calculateAlgorithm(totalMONeeded, bonusPercent);
+        calculateSmartEuro(totalMONeeded, bonusPercent);
     }
 
-    // --- ALGORITMO OTTIMIZZATO (Ceiling vs Floor) ---
-    function calculateAlgorithm(targetMO, bonusPercent) {
+    function calculateSmartEuro(targetMO, bonusPercent) {
         if (targetMO <= 0) {
-            renderResult(0, [], 0);
+            renderResult(0, []);
             return;
         }
 
-        const bonusMult = 1 + (bonusPercent / 100);
+        const bonusMultiplier = 1 + (bonusPercent / 100);
         const currentPacks = basePacks.map(p => ({
             cost: p.cost,
-            amount: Math.floor(p.amount * bonusMult)
+            amount: Math.floor(p.amount * bonusMultiplier)
         }));
 
         let bestSolution = findBestCombination(targetMO, currentPacks);
@@ -408,12 +435,9 @@
         let html = '';
         list.forEach(item => {
              html += `
-            <div class="flex justify-between items-center border-b border-gray-800 pb-2 last:border-0">
-                <div class="flex flex-col">
-                    <span class="text-white font-bold">${item.count}x Pacchetto ${item.pack.cost} €</span>
-                    <span class="text-[10px] text-gray-500">Contiene: ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} MO cad.</span>
-                </div>
-                <span class="text-ogame-money font-mono font-bold">${(item.count * item.pack.cost)} €</span>
+            <div class="flex justify-between">
+                <span>${item.count}x Pack ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} MO</span>
+                <span class="text-white">${(item.count * item.pack.cost)} €</span>
             </div>`;
         });
         document.getElementById('euroList').innerHTML = html || '<div class="text-center italic opacity-50">Nessun pacchetto</div>';
