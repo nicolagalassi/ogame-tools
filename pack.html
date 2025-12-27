@@ -212,11 +212,11 @@
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-money"></div>
                     
                     <h3 class="text-sm font-bold text-gray-300 uppercase mb-4 flex items-center gap-2">
-                        <span class="text-ogame-money text-lg">€</span> Shopping List
+                        <span class="text-ogame-money text-lg">€</span> Shopping List Ottimizzata
                     </h3>
 
                     <div id="euroList" class="space-y-3 text-sm text-gray-300 font-mono mb-4 min-h-[40px]">
-                        </div>
+                    </div>
 
                     <div class="border-t border-gray-700/50 my-3"></div>
                     
@@ -236,7 +236,7 @@
     </div>
 
 <script>
-    // PREZZI ARROTONDATI BASE
+    // PREZZI ARROTONDATI BASE (E DATI OGAME UFFICIALI)
     const basePacks = [
         { cost: 200, amount: 5100000 },
         { cost: 100, amount: 2525000 },
@@ -314,154 +314,108 @@
         calculateAlgorithm(totalMONeeded, bonusPercent);
     }
 
-    // --- NUOVO ALGORITMO RICORSIVO CON MEMORIA ---
+    // --- ALGORITMO RICORSIVO OTTIMIZZATO (Ceiling vs Floor) ---
     function calculateAlgorithm(targetMO, bonusPercent) {
         if (targetMO <= 0) {
             renderResult(0, [], 0);
             return;
         }
 
-        // 1. Calcola valori reali dei pacchetti con il bonus
         const bonusMult = 1 + (bonusPercent / 100);
         const currentPacks = basePacks.map(p => ({
             cost: p.cost,
-            amount: Math.floor(p.amount * bonusMult)
+            amount: Math.floor(p.amount * bonusMult),
+            originalAmount: p.amount
         }));
 
-        // 2. Troviamo la combinazione migliore
-        // Poiché i tagli sono pochi (6) e fissi, possiamo usare un approccio iterativo intelligente
-        // che ad ogni step confronta "Prendo il pacchetto superiore" vs "Riempio con quelli sotto".
-        
         let bestSolution = findBestCombination(targetMO, currentPacks);
-        
-        // 3. Renderizza
-        renderResult(bestSolution.totalCost, bestSolution.packList, bestSolution.totalMO);
+        renderResult(bestSolution.cost, bestSolution.list, bestSolution.totalMO);
     }
 
-    // Funzione principale che trova la combinazione
     function findBestCombination(target, packs) {
-        let currentTarget = target;
-        let totalCost = 0;
-        let totalMO = 0;
-        let packList = [];
+        // Caso Base: Target raggiunto o nessun pacchetto rimasto
+        if (target <= 0) return { cost: 0, list: [], totalMO: 0 };
+        if (packs.length === 0) return { cost: Infinity, list: [], totalMO: 0 };
 
-        // Iteriamo dal pacchetto più grande al più piccolo
-        for (let i = 0; i < packs.length; i++) {
-            let pack = packs[i];
+        let currentPack = packs[0]; // Pacchetto più grande disponibile
+        let nextPacks = packs.slice(1);
 
-            // Quanti ne servono per coprire "quasi tutto" (Floor)?
-            // Ne prendiamo il massimo possibile che non supera il target rimanente
-            // (A meno che non siamo arrivati alla fine o conviene l'upgrade)
-            
-            // Logica "Upgrade Check":
-            // Costo se copro TUTTO il residuo con QUESTO pacchetto (Ceiling)
-            let neededForCeiling = Math.ceil(currentTarget / pack.amount);
-            let costCeiling = neededForCeiling * pack.cost;
-            let moCeiling = neededForCeiling * pack.amount;
+        // --- STRADA A: CEILING (Chiudo Subito) ---
+        // Compro abbastanza di QUESTO pacchetto per coprire tutto quello che manca.
+        let countA = Math.ceil(target / currentPack.amount);
+        let costA = countA * currentPack.cost;
+        let moA = countA * currentPack.amount;
+        let listA = [{ count: countA, pack: currentPack }];
 
-            // Se questo è l'ultimo pacchetto (5€), non ho alternative "più piccole", devo prendere il ceiling.
-            if (i === packs.length - 1) {
-                totalCost += costCeiling;
-                totalMO += moCeiling;
-                if(neededForCeiling > 0) packList.push({ count: neededForCeiling, pack: pack });
-                currentTarget = 0; 
-                break;
-            }
-
-            // Altrimenti, confrontiamo:
-            // Opzione A: Copro tutto ORA con questo pacchetto (Ceiling)
-            // Opzione B: Prendo solo la parte intera (Floor) e lascio il resto ai pacchetti più piccoli
-            
-            // Per valutare l'Opzione B, dobbiamo sapere quanto mi costerebbe coprire il residuo con i piccoli.
-            // Possiamo stimarlo o calcolarlo ricorsivamente. Data la semplicità, calcoliamolo.
-            let countFloor = Math.floor(currentTarget / pack.amount);
-            let remainder = currentTarget - (countFloor * pack.amount);
-            
-            // Se remainder è 0, la scelta è ovvia (Floor == Ceiling)
-            if (remainder === 0) {
-                 totalCost += countFloor * pack.cost;
-                 totalMO += countFloor * pack.amount;
-                 if(countFloor > 0) packList.push({ count: countFloor, pack: pack });
-                 currentTarget = 0;
-                 break;
-            }
-
-            // Calcola il costo OTTIMALE per coprire il 'remainder' usando SOLO i pacchetti più piccoli (i+1 in poi)
-            let smallerPacks = packs.slice(i + 1);
-            let remainderSolution = solveRemainder(remainder, smallerPacks);
-            
-            let costOptionB = (countFloor * pack.cost) + remainderSolution.cost;
-
-            // CONFRONTO CRITICO
-            // Se Costo A (tutto subito) <= Costo B (spezzettato)
-            // OPPURE se Costo A è uguale a Costo B (preferiamo A perché dà più MO)
-            if (costCeiling <= costOptionB) {
-                // VINCE L'UPGRADE (Ceiling)
-                totalCost += costCeiling;
-                totalMO += moCeiling;
-                packList.push({ count: neededForCeiling, pack: pack });
-                currentTarget = 0; // Finito
-                break;
-            } else {
-                // VINCE LO SPEZZETTAMENTO (Floor + Next steps)
-                // Aggiungiamo i pacchetti "Floor" sicuri
-                if (countFloor > 0) {
-                    totalCost += countFloor * pack.cost;
-                    totalMO += countFloor * pack.amount;
-                    packList.push({ count: countFloor, pack: pack });
-                }
-                // Il loop continuerà con il next pack e il currentTarget aggiornato
-                currentTarget = remainder;
-            }
+        // --- STRADA B: FLOOR + NEXT (Riempio e delego) ---
+        // Compro il massimo numero intero di questo pacchetto che ci sta dentro
+        // E lascio il resto ai pacchetti più piccoli.
+        // (Solo se ci sono pacchetti più piccoli, altrimenti Floor == Ceiling)
+        
+        if (nextPacks.length === 0) {
+            return { cost: costA, list: listA, totalMO: moA };
         }
 
-        return { totalCost, packList, totalMO };
-    }
-
-    // Risolutore ricorsivo/semplice per il residuo
-    function solveRemainder(amount, availablePacks) {
-        // Caso base
-        if (availablePacks.length === 0) return { cost: Infinity }; // Non dovrebbe succedere
-        if (amount <= 0) return { cost: 0 };
-
-        let pack = availablePacks[0];
+        let countB = Math.floor(target / currentPack.amount);
+        let remainder = target - (countB * currentPack.amount);
         
-        // Stessa logica: Ceiling vs Floor + Next
-        let ceilingCount = Math.ceil(amount / pack.amount);
-        let ceilingCost = ceilingCount * pack.cost;
+        let costB_Partial = countB * currentPack.cost;
+        let moB_Partial = countB * currentPack.amount;
+        
+        // Ricorsione sul resto
+        let subResult = findBestCombination(remainder, nextPacks);
+        
+        let costB = costB_Partial + subResult.cost;
+        let moB = moB_Partial + subResult.totalMO;
+        
+        // Costruiamo la lista B
+        let listB = [];
+        if (countB > 0) listB.push({ count: countB, pack: currentPack });
+        listB = listB.concat(subResult.list);
 
-        if (availablePacks.length === 1) {
-            return { cost: ceilingCost };
+        // --- IL CONFRONTO ---
+        // Se la Strada A (Chiudo con pacchetto grande) costa MENO o UGUALE alla Strada B (spezzatino)
+        // Allora scelgo la A. Perché a parità di prezzo (es. 10€ vs 2x5€) il pacchetto grande è meglio.
+        if (costA <= costB) {
+            return { cost: costA, list: listA, totalMO: moA };
+        } else {
+            return { cost: costB, list: listB, totalMO: moB };
         }
-
-        let floorCount = Math.floor(amount / pack.amount);
-        let remainder = amount - (floorCount * pack.amount);
-        
-        let subResult = solveRemainder(remainder, availablePacks.slice(1));
-        let floorPathCost = (floorCount * pack.cost) + subResult.cost;
-
-        return { cost: Math.min(ceilingCost, floorPathCost) };
     }
 
     function renderResult(cost, list, moGained) {
         document.getElementById('euroTotal').innerText = cost + " €";
         document.getElementById('moGained').innerText = new Intl.NumberFormat('it-IT').format(moGained);
 
-        let html = '';
+        // Aggreghiamo i risultati per visualizzazione pulita
+        let displayList = [];
         list.forEach(item => {
+            // Cerca se esiste già
+            let found = displayList.find(x => x.pack.cost === item.pack.cost);
+            if(found) {
+                found.count += item.count;
+            } else {
+                displayList.push({ count: item.count, pack: item.pack });
+            }
+        });
+        
+        // Ordiniamo per costo decrescente
+        displayList.sort((a,b) => b.pack.cost - a.pack.cost);
+
+        let html = '';
+        displayList.forEach(item => {
              html += `
             <div class="flex justify-between items-center border-b border-gray-800 pb-2 last:border-0">
                 <div class="flex flex-col">
                     <span class="text-white font-bold">${item.count}x Pacchetto ${item.pack.cost} €</span>
                     <span class="text-[10px] text-gray-500">Contiene: ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} MO cad.</span>
                 </div>
-                <span class="text-ogame-money font-mono">${(item.count * item.pack.cost)} €</span>
+                <span class="text-ogame-money font-mono font-bold">${(item.count * item.pack.cost)} €</span>
             </div>`;
         });
         document.getElementById('euroList').innerHTML = html || '<div class="text-center italic opacity-50">Nessun pacchetto</div>';
     }
 
-    // Auto-load
     window.onload = function() {
         const cachedMetal = localStorage.getItem('ogameDailyMetal');
         if (cachedMetal) {
