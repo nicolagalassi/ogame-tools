@@ -74,18 +74,24 @@
                     <div class="absolute top-0 left-0 w-1 h-full bg-ogame-accent"></div>
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        Importa da OGLight (Multi-linea supportato)
+                        Importa da OGLight (Multi-linea)
                     </h3>
                     
                     <div class="relative">
-                        <textarea id="pasteArea" rows="4" placeholder="Incolla qui i costi (anche più righe insieme):
-Es: 
-4.764.432 Metallo | 9.528.865 Cristallo
-4.587.520 Metallo | 9.175.040 Cristallo" 
+                        <textarea id="pasteArea" rows="4" placeholder="Incolla qui i costi (es: 4.278.266 Metallo...).
+Puoi incollare più righe insieme." 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-4 text-sm text-gray-300 focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono resize-none"></textarea>
-                        <button onclick="parseString()" class="absolute bottom-3 right-3 px-4 py-1.5 bg-ogame-accent hover:bg-blue-600 text-white text-xs font-bold rounded shadow transition">
-                            ESTRAI & SOMMA
-                        </button>
+                        
+                        <div class="absolute bottom-3 right-3 flex items-center gap-2 bg-[#161b22] p-1 rounded-lg border border-gray-700/50 shadow-lg">
+                            <div class="flex items-center bg-[#0d1014] rounded border border-gray-700 px-2 py-1" title="Moltiplicatore (es. x12 pianeti)">
+                                <span class="text-xs text-gray-500 font-bold mr-1">x</span>
+                                <input type="number" id="parseMultiplier" value="1" min="1" 
+                                    class="w-8 bg-transparent text-white text-xs font-bold focus:outline-none text-right font-mono">
+                            </div>
+                            <button onclick="parseString()" class="px-4 py-1.5 bg-ogame-accent hover:bg-blue-600 text-white text-xs font-bold rounded shadow transition">
+                                ESTRAI
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -272,12 +278,14 @@ Es:
         document.getElementById('pasteArea').value = '';
         document.getElementById('shopDiscount').value = "0"; 
         document.getElementById('moBonus').value = "0"; 
+        document.getElementById('parseMultiplier').value = "1";
         calculate();
     }
 
-    // --- PARSING MULTI-RIGA ---
+    // --- PARSING MULTI-RIGA CON MOLTIPLICATORE ---
     function parseString() {
         const text = document.getElementById('pasteArea').value;
+        const multiplier = parseInt(document.getElementById('parseMultiplier').value) || 1;
         
         let totalMet = 0;
         let totalCry = 0;
@@ -292,12 +300,17 @@ Es:
         while ((match = regexCry.exec(text)) !== null) totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
         while ((match = regexDeut.exec(text)) !== null) totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
 
+        // Applica moltiplicatore
+        totalMet *= multiplier;
+        totalCry *= multiplier;
+        totalDeut *= multiplier;
+
         if (totalMet > 0 || totalCry > 0 || totalDeut > 0) {
             document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalMet);
             document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalCry);
             document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalDeut);
         } else if (text.trim().length > 0) {
-            alert("Nessuna risorsa trovata. Assicurati che il testo contenga 'Metallo', 'Cristallo' o 'Deuterio'.");
+            alert("Nessuna risorsa trovata.");
         }
 
         calculate();
@@ -462,14 +475,16 @@ Es:
         calculate();
     }
 </script>
+
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-      kofiWidgetOverlay.draw('galax95', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support me',
-        'floating-chat.donateButton.background-color': '#3399ff', // Ho messo il BLU del tuo tema (era #323842)
-        'floating-chat.donateButton.text-color': '#fff'
-      });
-    </script>
+<script>
+  kofiWidgetOverlay.draw('galax95', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support me',
+    'floating-chat.donateButton.background-color': '#3399ff',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
 </body>
 </html>
