@@ -147,12 +147,6 @@
                         <input type="checkbox" id="staff" onchange="calculateAll()" class="w-5 h-5 accent-ogame-accent rounded bg-gray-800 border-gray-600 group-hover:scale-110 transition">
                         <span class="ml-3 font-medium text-gray-300">Staff Comando (+2%)</span>
                     </label>
-                    
-                    <label class="flex items-center p-3 rounded-lg border border-ogame-warning/30 hover:border-ogame-warning/60 bg-[#0d1014]/50 cursor-pointer transition group">
-                        <input type="checkbox" id="crawlerOverload" onchange="calculateAll()" class="w-5 h-5 accent-ogame-warning rounded bg-gray-800 border-gray-600 group-hover:scale-110 transition">
-                        <span class="ml-3 font-medium text-gray-300 group-hover:text-ogame-warning transition">Crawler Overload (150%)</span>
-                    </label>
-
                     <div>
                         <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Classe Alleanza</label>
                         <select id="allyClass" onchange="calculateAll()" 
@@ -181,7 +175,7 @@
                     <option value="magma">Magma Forge</option>
                     <option value="human">HE Smelting (Umani)</option>
                     <option value="crawlers">Crawler Assegnati</option>
-                </select>
+                    <option value="overload">Crawler Overload (1=Si, 0=No)</option> </select>
                 
                 <input type="number" id="bulkValue" placeholder="Nuovo Valore" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none font-mono">
                 
@@ -233,7 +227,7 @@
         const v = data || {
             metal: 30, crystal: 0, deuterium: 0, 
             pos: 8, item: 0, magma: 0, human: 0,
-            crawlers: 0
+            crawlers: 0, overload: false
         };
 
         const inputStyle = "w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono";
@@ -321,7 +315,15 @@
                         </div>
                         <input type="number" class="p-crawlers-input ${inputStyle} border-ogame-warning/30 focus:border-ogame-warning focus:ring-ogame-warning" 
                             value="${v.crawlers}" placeholder="0" onchange="calculateAll()">
-                        <div class="text-[9px] text-gray-500 mt-1 italic p-crawler-feedback"></div>
+                        
+                        <div class="flex items-center justify-between mt-2">
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="checkbox" class="p-overload w-4 h-4 accent-ogame-warning rounded bg-gray-800 border-gray-600 transition" 
+                                    onchange="calculateAll()" ${v.overload ? 'checked' : ''}>
+                                <span class="text-[10px] text-gray-400 group-hover:text-ogame-warning transition">Overload (150%)</span>
+                            </label>
+                            <div class="text-[9px] text-gray-500 italic p-crawler-feedback"></div>
+                        </div>
                     </div>
 
                 </div>
@@ -384,6 +386,7 @@
         
         cards.forEach(card => {
             let selector = '';
+            let isCheckbox = false;
             
             // Map the select values to CSS classes
             switch(target) {
@@ -395,12 +398,18 @@
                 case 'magma': selector = '.p-magma'; break;
                 case 'human': selector = '.p-human'; break;
                 case 'crawlers': selector = '.p-crawlers-input'; break;
+                case 'overload': selector = '.p-overload'; isCheckbox = true; break; // NUOVO
             }
 
             if (selector) {
                 const input = card.querySelector(selector);
                 if (input) {
-                    input.value = value;
+                    if (isCheckbox) {
+                        // 1 = True (Check), 0 = False (Uncheck)
+                        input.checked = (value === 1);
+                    } else {
+                        input.value = value;
+                    }
                 }
             }
         });
@@ -418,7 +427,8 @@
             item: cardElement.querySelector('.p-item').value,
             magma: cardElement.querySelector('.p-magma').value,
             human: cardElement.querySelector('.p-human').value,
-            crawlers: cardElement.querySelector('.p-crawlers-input').value
+            crawlers: cardElement.querySelector('.p-crawlers-input').value,
+            overload: cardElement.querySelector('.p-overload').checked // NUOVO
         };
     }
 
@@ -434,7 +444,6 @@
             allyClass: document.getElementById('allyClass').value,
             geologist: document.getElementById('geologist').checked,
             staff: document.getElementById('staff').checked,
-            overload: document.getElementById('crawlerOverload').checked, // NUOVO
             lfGlobalBonus: parseFloat(document.getElementById('lfGlobalBonus').value) || 0
         };
 
@@ -454,6 +463,7 @@
             const magmaLvl = parseInt(pData.magma) || 0;
             const humanLvl = parseInt(pData.human) || 0;
             const inputCrawlers = parseInt(pData.crawlers) || 0; 
+            const isOverload = pData.overload; // NUOVO
 
             // A. Posizione
             let posMultiplier = 1.0;
@@ -516,7 +526,7 @@
                 // LOGICA CRAWLER FACTOR AGGIORNATA
                 let unitBonus = 0.02; // Base 0.02%
                 if (globalData.playerClass === 'collector') unitBonus *= 1.5; // +50% Classe
-                if (globalData.overload) unitBonus *= 1.5; // +50% Overload
+                if (isOverload) unitBonus *= 1.5; // +50% Overload (LOCALE)
 
                 let crawlerPerc = activeCrawlers * unitBonus;
                 
@@ -578,7 +588,6 @@
                 lfGlobalBonus: document.getElementById('lfGlobalBonus').value,
                 geologist: document.getElementById('geologist').checked,
                 staff: document.getElementById('staff').checked,
-                overload: document.getElementById('crawlerOverload').checked,
                 allyClass: document.getElementById('allyClass').value
             },
             planets: planets
@@ -593,7 +602,6 @@
         document.getElementById('lfGlobalBonus').value = data.global.lfGlobalBonus;
         document.getElementById('geologist').checked = data.global.geologist;
         document.getElementById('staff').checked = data.global.staff;
-        document.getElementById('crawlerOverload').checked = data.global.overload || false; // default false
         document.getElementById('allyClass').value = data.global.allyClass;
 
         const container = document.getElementById('planetList');
