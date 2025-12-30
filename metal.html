@@ -147,6 +147,12 @@
                         <input type="checkbox" id="staff" onchange="calculateAll()" class="w-5 h-5 accent-ogame-accent rounded bg-gray-800 border-gray-600 group-hover:scale-110 transition">
                         <span class="ml-3 font-medium text-gray-300">Staff Comando (+2%)</span>
                     </label>
+                    
+                    <label class="flex items-center p-3 rounded-lg border border-ogame-warning/30 hover:border-ogame-warning/60 bg-[#0d1014]/50 cursor-pointer transition group">
+                        <input type="checkbox" id="crawlerOverload" onchange="calculateAll()" class="w-5 h-5 accent-ogame-warning rounded bg-gray-800 border-gray-600 group-hover:scale-110 transition">
+                        <span class="ml-3 font-medium text-gray-300 group-hover:text-ogame-warning transition">Crawler Overload (150%)</span>
+                    </label>
+
                     <div>
                         <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Classe Alleanza</label>
                         <select id="allyClass" onchange="calculateAll()" 
@@ -428,6 +434,7 @@
             allyClass: document.getElementById('allyClass').value,
             geologist: document.getElementById('geologist').checked,
             staff: document.getElementById('staff').checked,
+            overload: document.getElementById('crawlerOverload').checked, // NUOVO
             lfGlobalBonus: parseFloat(document.getElementById('lfGlobalBonus').value) || 0
         };
 
@@ -488,7 +495,7 @@
             const mineSum = metalLvl + crystalLvl + deuteriumLvl;
             let maxCrawlers = mineSum * 8;
 
-            // LOGICA AGGIUNTA: Se Collector + Geologo -> +10% al cap dei Crawler (Arrotondato per difetto)
+            // Se Collector + Geologo -> +10% al cap dei Crawler (Arrotondato per difetto)
             if (globalData.playerClass === 'collector' && globalData.geologist) {
                 maxCrawlers = Math.floor(maxCrawlers * 1.1);
             }
@@ -506,8 +513,16 @@
             }
 
             if (activeCrawlers > 0) {
-                const crawlerFactor = (globalData.playerClass === 'collector') ? 0.03 : 0.02; 
-                let crawlerPerc = activeCrawlers * crawlerFactor;
+                // LOGICA CRAWLER FACTOR AGGIORNATA
+                let unitBonus = 0.02; // Base 0.02%
+                if (globalData.playerClass === 'collector') unitBonus *= 1.5; // +50% Classe
+                if (globalData.overload) unitBonus *= 1.5; // +50% Overload
+
+                let crawlerPerc = activeCrawlers * unitBonus;
+                
+                // Formatta per display pulito
+                const unitBonusDisplay = (unitBonus * 100).toFixed(2).replace('.', ',');
+                
                 bonuses.push({name: `Crawler (${activeCrawlers})`, val: crawlerPerc}); 
                 totalPercent += crawlerPerc; 
             }
@@ -518,7 +533,7 @@
 
             totalHourly += planetTotal;
 
-            // F. Breakdown HTML (Omitted for brevity, logic remains same)
+            // F. Breakdown HTML
             let detailsHTML = `<div class="flex justify-between text-gray-500"><span>Base (+${posPercLabel}%)</span><span>${formatNum(mineBase)}</span></div>
                                <div class="flex justify-between text-gray-600 text-[10px] mb-2"><span>Naturale</span><span>${formatNum(naturalProd)}</span></div>
                                <div class="border-t border-gray-700 my-2"></div>`;
@@ -536,10 +551,7 @@
         document.getElementById('resHourly').innerText = formatNum(totalHourly);
         document.getElementById('resDaily').innerText = formatNum(currentTotalDaily);
 
-        // --- SALVATAGGIO PER PACK CALCULATOR ---
         localStorage.setItem('ogameDailyMetal', currentTotalDaily);
-        // ---------------------------------------
-
         saveToLocalStorage();
     }
 
@@ -566,6 +578,7 @@
                 lfGlobalBonus: document.getElementById('lfGlobalBonus').value,
                 geologist: document.getElementById('geologist').checked,
                 staff: document.getElementById('staff').checked,
+                overload: document.getElementById('crawlerOverload').checked,
                 allyClass: document.getElementById('allyClass').value
             },
             planets: planets
@@ -580,6 +593,7 @@
         document.getElementById('lfGlobalBonus').value = data.global.lfGlobalBonus;
         document.getElementById('geologist').checked = data.global.geologist;
         document.getElementById('staff').checked = data.global.staff;
+        document.getElementById('crawlerOverload').checked = data.global.overload || false; // default false
         document.getElementById('allyClass').value = data.global.allyClass;
 
         const container = document.getElementById('planetList');
@@ -648,14 +662,16 @@
 
     window.onload = loadFromLocalStorage;
 </script>
+
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-      kofiWidgetOverlay.draw('galax95', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support me',
-        'floating-chat.donateButton.background-color': '#3399ff', // Ho messo il BLU del tuo tema (era #323842)
-        'floating-chat.donateButton.text-color': '#fff'
-      });
-    </script>
+<script>
+  kofiWidgetOverlay.draw('galax95', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support me',
+    'floating-chat.donateButton.background-color': '#3399ff',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
 </body>
 </html>
