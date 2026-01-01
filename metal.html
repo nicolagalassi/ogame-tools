@@ -120,7 +120,7 @@
                         <select id="playerClass" onchange="calculateAll()" 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition">
                             <option value="collector">Collector (+25%)</option>
-                            <option value="other">Explor/General</option>
+                            <option value="other">Explorer/General</option>
                         </select>
                     </div>
                 </div>
@@ -175,7 +175,8 @@
                     <option value="magma">Magma Forge</option>
                     <option value="human">HE Smelting (Umani)</option>
                     <option value="crawlers">Crawler Assegnati</option>
-                    <option value="overload">Crawler Overload (1=Si, 0=No)</option> </select>
+                    <option value="overload">Crawler Overload (1=Si, 0=No)</option>
+                </select>
                 
                 <input type="number" id="bulkValue" placeholder="Nuovo Valore" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none font-mono">
                 
@@ -398,7 +399,7 @@
                 case 'magma': selector = '.p-magma'; break;
                 case 'human': selector = '.p-human'; break;
                 case 'crawlers': selector = '.p-crawlers-input'; break;
-                case 'overload': selector = '.p-overload'; isCheckbox = true; break; // NUOVO
+                case 'overload': selector = '.p-overload'; isCheckbox = true; break; 
             }
 
             if (selector) {
@@ -428,7 +429,7 @@
             magma: cardElement.querySelector('.p-magma').value,
             human: cardElement.querySelector('.p-human').value,
             crawlers: cardElement.querySelector('.p-crawlers-input').value,
-            overload: cardElement.querySelector('.p-overload').checked // NUOVO
+            overload: cardElement.querySelector('.p-overload').checked
         };
     }
 
@@ -463,7 +464,7 @@
             const magmaLvl = parseInt(pData.magma) || 0;
             const humanLvl = parseInt(pData.human) || 0;
             const inputCrawlers = parseInt(pData.crawlers) || 0; 
-            const isOverload = pData.overload; // NUOVO
+            const isOverload = pData.overload; // LOCALE
 
             // A. Posizione
             let posMultiplier = 1.0;
@@ -525,8 +526,14 @@
             if (activeCrawlers > 0) {
                 // LOGICA CRAWLER FACTOR AGGIORNATA
                 let unitBonus = 0.02; // Base 0.02%
-                if (globalData.playerClass === 'collector') unitBonus *= 1.5; // +50% Classe
-                if (isOverload) unitBonus *= 1.5; // +50% Overload (LOCALE)
+                
+                if (globalData.playerClass === 'collector') {
+                    unitBonus *= 1.5; // Bonus Classe Collector
+                    if (isOverload) {
+                        unitBonus *= 1.5; // Bonus Overload (SOLO SE COLLECTOR)
+                    }
+                }
+                // Se non è collector, resta 0.02 base (l'overload non ha effetto)
 
                 let crawlerPerc = activeCrawlers * unitBonus;
                 
