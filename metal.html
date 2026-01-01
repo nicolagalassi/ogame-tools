@@ -171,7 +171,7 @@
                     <option value="crystal">Miniera Cristallo</option>
                     <option value="deuterium">Miniera Deuterio</option>
                     <option value="item">Item Metallo (%)</option>
-                    <option value="pos">Posizione (1-15)</option>
+                    <option value="itemCustom">Item Custom (%)</option> <option value="pos">Posizione (1-15)</option>
                     <option value="magma">Magma Forge</option>
                     <option value="human">HE Smelting (Umani)</option>
                     <option value="crawlers">Crawler Assegnati</option>
@@ -227,7 +227,7 @@
     function getPlanetHTML(id, data = null) {
         const v = data || {
             metal: 30, crystal: 0, deuterium: 0, 
-            pos: 8, item: 0, magma: 0, human: 0,
+            pos: 8, item: 0, itemCustom: 0, magma: 0, human: 0,
             crawlers: 0, overload: false
         };
 
@@ -287,14 +287,18 @@
                             </select>
                         </div>
                         <div>
-                            <label class="${labelStyle}">Item</label>
-                            <select class="p-item ${inputStyle}" onchange="calculateAll()">
-                                <option value="0" ${v.item == 0 ? 'selected' : ''}>-</option>
-                                <option value="10" ${v.item == 10 ? 'selected' : ''}>+10%</option>
-                                <option value="20" ${v.item == 20 ? 'selected' : ''}>+20%</option>
-                                <option value="30" ${v.item == 30 ? 'selected' : ''}>+30%</option>
-                                <option value="40" ${v.item == 40 ? 'selected' : ''}>+40%</option>
-                            </select>
+                            <label class="${labelStyle}">Item & Custom %</label>
+                            <div class="flex gap-2">
+                                <select class="p-item w-1/2 bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-ogame-accent outline-none transition" onchange="calculateAll()">
+                                    <option value="0" ${v.item == 0 ? 'selected' : ''}>-</option>
+                                    <option value="10" ${v.item == 10 ? 'selected' : ''}>10%</option>
+                                    <option value="20" ${v.item == 20 ? 'selected' : ''}>20%</option>
+                                    <option value="30" ${v.item == 30 ? 'selected' : ''}>30%</option>
+                                    <option value="40" ${v.item == 40 ? 'selected' : ''}>40%</option>
+                                </select>
+                                <input type="number" class="p-item-custom w-1/2 bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-ogame-accent outline-none text-center" 
+                                    value="${v.itemCustom}" placeholder="Custom %" onchange="calculateAll()">
+                            </div>
                         </div>
                     </div>
 
@@ -395,6 +399,7 @@
                 case 'crystal': selector = '.p-crystal'; break;
                 case 'deuterium': selector = '.p-deuterium'; break;
                 case 'item': selector = '.p-item'; break;
+                case 'itemCustom': selector = '.p-item-custom'; break; // NUOVO
                 case 'pos': selector = '.p-pos'; break;
                 case 'magma': selector = '.p-magma'; break;
                 case 'human': selector = '.p-human'; break;
@@ -426,6 +431,7 @@
             deuterium: cardElement.querySelector('.p-deuterium').value,
             pos: cardElement.querySelector('.p-pos').value,
             item: cardElement.querySelector('.p-item').value,
+            itemCustom: cardElement.querySelector('.p-item-custom').value, // NUOVO
             magma: cardElement.querySelector('.p-magma').value,
             human: cardElement.querySelector('.p-human').value,
             crawlers: cardElement.querySelector('.p-crawlers-input').value,
@@ -461,6 +467,7 @@
             const deuteriumLvl = parseInt(pData.deuterium) || 0;
             const pos = parseInt(pData.pos);
             const itemPerc = parseInt(pData.item);
+            const itemCustom = parseInt(pData.itemCustom) || 0; // NUOVO
             const magmaLvl = parseInt(pData.magma) || 0;
             const humanLvl = parseInt(pData.human) || 0;
             const inputCrawlers = parseInt(pData.crawlers) || 0; 
@@ -495,6 +502,8 @@
             if (globalData.allyClass === 'trader') { bonuses.push({name: "Trader", val: 5}); totalPercent += 5; }
             
             if (itemPerc > 0) { bonuses.push({name: "Item", val: itemPerc}); totalPercent += itemPerc; }
+            // NUOVO: Item Custom
+            if (itemCustom > 0) { bonuses.push({name: "Custom", val: itemCustom}); totalPercent += itemCustom; }
             
             if (magmaLvl > 0) { const val = magmaLvl * 2; bonuses.push({name: `Magma (${magmaLvl})`, val: val}); totalPercent += val; }
             
