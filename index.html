@@ -12,12 +12,13 @@
 <body class="bg-ogame-bg text-ogame-text font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
     <div class="text-center mb-12 relative w-full max-w-4xl">
+        
         <div class="absolute top-0 right-0 flex flex-col items-center justify-center w-12 h-12 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group relative cursor-pointer" title="Lingua/Language">
             <svg class="w-4 h-4 mb-0.5 group-hover:scale-110 transition pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
             <span id="langLabel" class="text-[9px] font-bold uppercase pointer-events-none">IT</span>
             <select id="langSelector" onchange="setLanguage(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                <option value="it">Italiano</option>
-                <option value="en">English</option>
+                <option value="it" style="background-color: #161b22; color: #c9d1d9;">Italiano</option>
+                <option value="en" style="background-color: #161b22; color: #c9d1d9;">English</option>
             </select>
         </div>
 
@@ -36,7 +37,7 @@
                 <svg class="w-32 h-32 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
             </div>
             <h2 class="text-2xl font-bold text-white mb-2 z-10" data-i18n="card_metal_title">Production Core</h2>
-            <p class="text-gray-400 mb-6 flex-grow z-10" data-i18n="card_metal_desc">Calcolatore produzione miniere, gestione crawler e forme di vita.</p>
+            <p class="text-gray-400 mb-6 flex-grow z-10" data-i18n="card_metal_desc">Ottimizza la produzione per calcolare il valore dei pacchetti.</p>
             <a href="metal.html" class="inline-flex justify-center items-center px-6 py-3 bg-ogame-accent hover:bg-blue-600 text-white font-bold rounded-lg transition z-10">
                 <span data-i18n="btn_open">APRI TOOL</span> <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
@@ -47,7 +48,7 @@
                 <svg class="w-32 h-32 text-ogame-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
             <h2 class="text-2xl font-bold text-white mb-2 z-10" data-i18n="card_pack_title">Pack Exchange</h2>
-            <p class="text-gray-400 mb-6 flex-grow z-10" data-i18n="card_pack_desc">Analisi costi costruzioni e ottimizzazione acquisto pacchetti risorse.</p>
+            <p class="text-gray-400 mb-6 flex-grow z-10" data-i18n="card_pack_desc">Analisi costi costruzioni e ottimizzazione acquisto pacchetti risorse (MSU).</p>
             <a href="pack.html" class="inline-flex justify-center items-center px-6 py-3 bg-ogame-warning hover:bg-yellow-600 text-white font-bold rounded-lg transition z-10">
                 <span data-i18n="btn_open">APRI TOOL</span> <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
@@ -57,6 +58,13 @@
 
     <script src="js/lang.js"></script>
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>kofiWidgetOverlay.draw('galax95', {'type': 'floating-chat','floating-chat.donateButton.text': 'Support me','floating-chat.donateButton.background-color': '#3399ff','floating-chat.donateButton.text-color': '#fff'});</script>
+    <script>
+      kofiWidgetOverlay.draw('galax95', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support me',
+        'floating-chat.donateButton.background-color': '#3399ff',
+        'floating-chat.donateButton.text-color': '#fff'
+      });
+    </script>
 </body>
 </html>
