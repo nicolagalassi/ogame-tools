@@ -44,7 +44,7 @@
     "res_deuterium": "Deuterium",
     "lbl_mine_metal": "Metal Mine",
     "lbl_mine_crystal": "Crystal Mine",
-    "lbl_mine_deuterium": "Deuterium Synthesizer",
+    "lbl_mine_deuterium": "Deuterium Synth",
     "lbl_position": "Position",
     "lbl_item": "Item",
     "lbl_magma": "Magma Forge",
@@ -87,7 +87,7 @@
     "lbl_level": "Level",
     "lbl_planets": "N° Planets",
     "lbl_quantity": "Quantity",
-    "lbl_min_level": "Mineralogy Centre Lvl",
+    "lbl_min_level": "Mineral Research Centre Lv",
     "btn_add_queue": "Add to List",
     "cat_resources": "Resource Buildings",
     "cat_facilities": "Facilities",
@@ -99,7 +99,7 @@
 
     "metal_mine": "Metal Mine",
     "crystal_mine": "Crystal Mine",
-    "deuterium_synthesizer": "Deuterium Synthesizer",
+    "deuterium_synthesizer": "Deuterium Synth",
     "solar_plant": "Solar Plant",
     "fusion_reactor": "Fusion Reactor",
     "metal_storage": "Metal Storage",
@@ -152,5 +152,5 @@
     "gauss_cannon": "Gauss Cannon",
     "ion_cannon": "Ion Cannon",
     "plasma_turret": "Plasma Turret",
-    "mineralogy_centre": "Mineralogy Centre"
+    "mineralogy_centre": "Mineral Research Centre"
 }
