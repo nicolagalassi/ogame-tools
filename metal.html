@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Metal Calculator | OGame Hub</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { theme: { extend: { colors: { ogame: { bg: '#0d1014', panel: '#161b22', border: '#30363d', accent: '#3399ff', success: '#238636', danger: '#da3633', warning: '#d29922', text: '#c9d1d9' } }, fontFamily: { sans: ['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'], mono: ['Consolas', 'Monaco', 'monospace'] } } } }
@@ -15,13 +16,6 @@
     <header class="relative bg-gradient-to-b from-[#1c2128] to-ogame-bg border-b border-ogame-border pt-8 pb-12 px-4 mb-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
-                <div class="mb-2">
-                    <select id="langSelector" onchange="setLanguage(this.value)" class="bg-[#0d1014] border border-gray-700 text-xs text-gray-400 rounded px-2 py-1 focus:outline-none">
-                        <option value="it">🇮🇹 Italiano</option>
-                        <option value="en">🇬🇧 English</option>
-                    </select>
-                </div>
-
                 <a href="index.html" class="inline-flex items-center text-sm text-gray-500 hover:text-ogame-accent transition mb-2 group">
                     <svg class="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     <span data-i18n="nav_back">Torna all'Hub</span>
@@ -30,26 +24,40 @@
                     <span data-i18n="metal_calc_title">Metal Calculator</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="metal_calc_desc">
-                    Ottimizza la produzione...
+                    Ottimizza la produzione, gestisci i crawler e calcola il valore esatto dei pacchetti risorse giornalieri.
                 </p>
             </div>
             
             <div class="flex gap-2 bg-ogame-panel p-2 rounded-xl border border-ogame-border shadow-lg">
-                <button onclick="exportData()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group">
+                <button onclick="exportData()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group" title="Salva">
                     <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                     <span class="text-[9px] uppercase font-bold" data-i18n="btn_save">Salva</span>
                 </button>
+                
                 <div class="w-px bg-gray-700 my-2"></div>
-                <button onclick="document.getElementById('fileInput').click()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group">
+                
+                <button onclick="document.getElementById('fileInput').click()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group" title="Carica">
                     <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                     <span class="text-[9px] uppercase font-bold" data-i18n="btn_load">Carica</span>
                 </button>
+                
                 <div class="w-px bg-gray-700 my-2"></div>
-                <button onclick="resetAll()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-red-900/20 transition text-gray-400 hover:text-ogame-danger group">
+                
+                <button onclick="resetAll()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-red-900/20 transition text-gray-400 hover:text-ogame-danger group" title="Reset">
                     <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     <span class="text-[9px] uppercase font-bold" data-i18n="btn_reset">Reset</span>
                 </button>
                 <input type="file" id="fileInput" accept=".json" onchange="importData(this)" class="hidden">
+
+                <div class="w-px bg-gray-700 my-2"></div>
+
+                <div class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group relative" title="Lingua/Language">
+                    <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                    <select id="langSelector" onchange="setLanguage(this.value)" class="appearance-none bg-transparent border-none text-[9px] uppercase font-bold text-center focus:ring-0 cursor-pointer w-full text-current hover:text-white outline-none py-0">
+                        <option value="it" class="bg-[#161b22] text-gray-300">IT</option>
+                        <option value="en" class="bg-[#161b22] text-gray-300">EN</option>
+                    </select>
+                </div>
             </div>
         </div>
     </header>
@@ -59,7 +67,7 @@
         <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl mb-8 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-1 h-full bg-ogame-accent"></div>
             <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-ogame-accent"></span> <span data-i18n="settings_title">Impostazioni</span>
+                <span class="w-2 h-2 rounded-full bg-ogame-accent"></span> <span data-i18n="settings_title">Impostazioni Account & Universo</span>
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -71,8 +79,8 @@
                     <div>
                         <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="lbl_player_class">Classe Giocatore</label>
                         <select id="playerClass" onchange="calculateAll()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent outline-none">
-                            <option value="collector" data-i18n="opt_collector">Collector</option>
-                            <option value="other" data-i18n="opt_general">General</option>
+                            <option value="collector" data-i18n="opt_collector">Collector (+25%)</option>
+                            <option value="other" data-i18n="opt_general">Explorer/General</option>
                         </select>
                     </div>
                 </div>
@@ -82,24 +90,24 @@
                         <input type="number" id="plasmaLevel" value="0" min="0" onchange="calculateAll()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="lbl_lf_bonus">Bonus LifeForms</label>
-                        <input type="number" id="lfGlobalBonus" value="0" onchange="calculateAll()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent outline-none">
+                        <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="lbl_lf_bonus">Bonus LifeForms Totale (%)</label>
+                        <input type="number" id="lfGlobalBonus" value="0" placeholder="0" onchange="calculateAll()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-4 py-3 text-white focus:border-ogame-accent outline-none">
                     </div>
                 </div>
                 <div class="space-y-4 pt-1">
                     <label class="flex items-center p-3 rounded-lg border border-gray-700/50 hover:border-gray-600 bg-[#0d1014]/50 cursor-pointer group">
                         <input type="checkbox" id="geologist" onchange="calculateAll()" class="w-5 h-5 accent-ogame-accent rounded bg-gray-800 border-gray-600">
-                        <span class="ml-3 font-medium text-gray-300" data-i18n="lbl_geo">Geologo</span>
+                        <span class="ml-3 font-medium text-gray-300" data-i18n="lbl_geo">Geologo (+10%)</span>
                     </label>
                     <label class="flex items-center p-3 rounded-lg border border-gray-700/50 hover:border-gray-600 bg-[#0d1014]/50 cursor-pointer group">
                         <input type="checkbox" id="staff" onchange="calculateAll()" class="w-5 h-5 accent-ogame-accent rounded bg-gray-800 border-gray-600">
-                        <span class="ml-3 font-medium text-gray-300" data-i18n="lbl_staff">Staff</span>
+                        <span class="ml-3 font-medium text-gray-300" data-i18n="lbl_staff">Staff Comando (+2%)</span>
                     </label>
                     <div>
                         <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="lbl_ally_class">Classe Alleanza</label>
                         <select id="allyClass" onchange="calculateAll()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:border-ogame-accent outline-none">
                             <option value="none" data-i18n="opt_none">Nessuna</option>
-                            <option value="trader" data-i18n="opt_trader">Mercante</option>
+                            <option value="trader" data-i18n="opt_trader">Mercante (+5%)</option>
                         </select>
                     </div>
                 </div>
@@ -108,23 +116,24 @@
 
         <div class="bg-[#11161d] border border-ogame-accent/30 rounded-xl p-4 mb-8 shadow-lg flex flex-col md:flex-row items-center gap-4">
             <div class="flex items-center gap-2 text-ogame-accent whitespace-nowrap">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 <span class="font-bold text-sm uppercase tracking-wide" data-i18n="bulk_title">Modifica Massiva</span>
             </div>
             <div class="flex-grow grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
                 <select id="bulkTarget" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none">
-                    <option value="metal" data-i18n="lbl_mine_metal">Metallo</option>
-                    <option value="crystal" data-i18n="lbl_mine_crystal">Cristallo</option>
-                    <option value="deuterium" data-i18n="lbl_mine_deuterium">Deuterio</option>
-                    <option value="item" data-i18n="lbl_item">Item</option>
+                    <option value="metal" data-i18n="lbl_mine_metal">Miniera Metallo</option>
+                    <option value="crystal" data-i18n="lbl_mine_crystal">Miniera Cristallo</option>
+                    <option value="deuterium" data-i18n="lbl_mine_deuterium">Miniera Deuterio</option>
+                    <option value="item" data-i18n="lbl_item">Item Metallo (%)</option>
                     <option value="itemCustom">Item Custom (%)</option>
                     <option value="pos" data-i18n="lbl_position">Posizione</option>
-                    <option value="magma" data-i18n="lbl_magma">Magma</option>
-                    <option value="human" data-i18n="lbl_human">Human</option>
-                    <option value="crawlers" data-i18n="lbl_crawlers">Crawler</option>
-                    <option value="overload" data-i18n="lbl_overload">Overload</option>
+                    <option value="magma" data-i18n="lbl_magma">Magma Forge</option>
+                    <option value="human" data-i18n="lbl_human">HE Smelting (Umani)</option>
+                    <option value="crawlers" data-i18n="lbl_crawlers">Crawler Assegnati</option>
+                    <option value="overload" data-i18n="lbl_overload">Crawler Overload</option>
                 </select>
-                <input type="number" id="bulkValue" data-i18n="bulk_placeholder" placeholder="Valore" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none font-mono">
-                <button onclick="applyBulk()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm transition shadow-md" data-i18n="btn_bulk_apply">Applica</button>
+                <input type="number" id="bulkValue" data-i18n="bulk_placeholder" placeholder="Nuovo Valore" class="w-full bg-[#0d1014] border border-gray-700 rounded px-3 py-2 text-white text-sm focus:border-ogame-accent outline-none font-mono">
+                <button onclick="applyBulk()" class="w-full bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded text-sm transition shadow-md" data-i18n="btn_bulk_apply">Applica a Tutti</button>
             </div>
         </div>
 
@@ -134,7 +143,7 @@
                 <span class="text-xs md:text-sm font-normal text-gray-400 bg-gray-800 px-2 py-1 rounded-md border border-gray-700" id="planetCountBadge">0</span>
             </h2>
             <button onclick="addPlanet()" class="px-4 py-2 md:px-6 md:py-2 bg-ogame-success hover:bg-green-600 text-white text-sm md:text-base font-bold rounded-lg shadow-lg hover:shadow-green-900/30 transition transform hover:-translate-y-0.5 flex items-center gap-2 whitespace-nowrap">
-                <span class="text-lg leading-none">+</span> <span class="hidden md:inline" data-i18n="btn_add_planet">Nuovo Pianeta</span>
+                <span class="text-lg leading-none">+</span> <span class="hidden md:inline" data-i18n="btn_add_planet">Nuovo Pianeta</span><span class="md:hidden">Nuovo</span>
             </button>
         </div>
         
@@ -165,7 +174,6 @@
         let planetCounter = 0;
         let currentTotalDaily = 0; 
 
-        // Listener per cambio lingua: Ridisegna i pianeti
         document.addEventListener('langLoaded', () => {
             const data = getDataObject();
             const container = document.getElementById('planetList');
@@ -193,7 +201,6 @@
             const labelStyle = "block text-[11px] uppercase font-bold text-gray-500 mb-1";
             const lfLabelStyle = "block text-[11px] uppercase font-bold text-gray-500 mb-1 min-h-[32px] flex items-end pb-1";
 
-            // USO t('key') PER TRADURRE
             return `
                 <div class="bg-ogame-panel border border-gray-700/50 rounded-xl p-5 hover:border-ogame-accent/50 transition duration-300 relative group flex flex-col shadow-lg card" id="card-${id}">
                     <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-800">
@@ -203,9 +210,11 @@
                         </div>
                         <div class="flex gap-2">
                             <button onclick="clonePlanet(${id})" class="px-3 py-1.5 bg-blue-900/40 hover:bg-blue-600 border border-blue-800/50 text-blue-200 text-xs rounded transition flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                                 <span class="hidden sm:inline">${t('btn_clone')}</span>
                             </button>
                             <button onclick="removePlanet(${id})" class="px-3 py-1.5 bg-red-900/40 hover:bg-red-600 border border-red-800/50 text-red-200 text-xs rounded transition flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                                 <span class="hidden sm:inline">${t('btn_delete')}</span>
                             </button>
                         </div>
@@ -272,9 +281,6 @@
             `;
         }
 
-        // --- STESSE FUNZIONI DI PRIMA (extract, calculate, bulk, etc) ---
-        // Le copio per completezza, ma la logica è identica, cambia solo qualche etichetta interna
-        
         function renumberPlanets() {
             document.querySelectorAll('.planet-index').forEach((el, i) => el.innerText = '#' + (i + 1));
             updateBadge();
@@ -385,12 +391,11 @@
             saveToLocalStorage();
         }
 
-        // Funzioni load/save/export identiche a prima, omesse per brevità ma DEVONO ESSERCI
-        function getDataObject() { /* ... codice di prima ... */ 
+        function getDataObject() { 
              const planets = []; document.querySelectorAll('.card').forEach(card => planets.push(extractPlanetData(card)));
              return { global: { ecoSpeed: document.getElementById('ecoSpeed').value, playerClass: document.getElementById('playerClass').value, plasmaLevel: document.getElementById('plasmaLevel').value, lfGlobalBonus: document.getElementById('lfGlobalBonus').value, geologist: document.getElementById('geologist').checked, staff: document.getElementById('staff').checked, allyClass: document.getElementById('allyClass').value }, planets: planets };
         }
-        function loadDataObject(data) { /* ... codice di prima ... */ 
+        function loadDataObject(data) { 
              if (!data || !data.global) return;
              document.getElementById('ecoSpeed').value = data.global.ecoSpeed; document.getElementById('playerClass').value = data.global.playerClass; document.getElementById('plasmaLevel').value = data.global.plasmaLevel; document.getElementById('lfGlobalBonus').value = data.global.lfGlobalBonus; document.getElementById('geologist').checked = data.global.geologist; document.getElementById('staff').checked = data.global.staff; document.getElementById('allyClass').value = data.global.allyClass;
              const container = document.getElementById('planetList'); container.innerHTML = ''; planetCounter = 0;
