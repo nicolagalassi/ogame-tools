@@ -64,11 +64,13 @@
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
                         <div class="md:col-span-1">
                             <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_category">Categoria</label>
-                            <select id="builderCat" onchange="updateBuilderItems()" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none">
+                            <select id="builderCat" onchange="toggleBuilderFields()" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none">
                                 <option value="resources" data-i18n="cat_resources">Risorse</option>
                                 <option value="facilities" data-i18n="cat_facilities">Strutture</option>
                                 <option value="research" data-i18n="cat_research">Ricerche</option>
                                 <option value="fleet" data-i18n="cat_fleet">Flotta/Difesa</option>
+                                <option value="lf_rock" data-i18n="cat_lf_rock">LF Rock'tal</option>
+                                <option value="lf_human" data-i18n="cat_lf_human">LF Umani</option>
                             </select>
                         </div>
                         <div class="md:col-span-1">
@@ -76,14 +78,14 @@
                             <select id="builderItem" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none">
                                 </select>
                         </div>
-                        <div class="md:col-span-1">
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_level_amount">Liv./Qta</label>
+                        <div class="md:col-span-1" id="fieldLevelContainer">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_level" id="lblLevel">Livello</label>
                             <input type="number" id="builderLevel" placeholder="1" min="1" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none font-mono">
                         </div>
-                        <div class="md:col-span-1 relative">
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_multiplier">Moltiplicatore</label>
+                        <div class="md:col-span-1 relative" id="fieldMultContainer">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_planets" id="lblMult">N° Pianeti</label>
                             <div class="flex items-center">
-                                <span class="absolute left-3 text-gray-500 text-sm font-bold">x</span>
+                                <span class="absolute left-3 text-gray-500 text-sm font-bold" id="multPrefix">x</span>
                                 <input type="number" id="builderMult" value="1" min="1" class="w-full bg-[#0d1014] border border-gray-700 rounded pl-6 pr-2 py-2 text-white text-sm focus:border-green-500 outline-none font-mono">
                             </div>
                         </div>
@@ -128,24 +130,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_metal">Metallo</label>
-                            <div class="relative">
-                                <input type="text" id="costMetal" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-ogame-accent outline-none font-mono text-lg">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div>
-                            </div>
+                            <input type="text" id="costMetal" placeholder="0" readonly class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-ogame-accent outline-none font-mono text-lg cursor-not-allowed opacity-70">
                         </div>
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_crystal">Cristallo</label>
-                            <div class="relative">
-                                <input type="text" id="costCrystal" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 outline-none font-mono text-lg">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                            </div>
+                            <input type="text" id="costCrystal" placeholder="0" readonly class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-green-500 outline-none font-mono text-lg cursor-not-allowed opacity-70">
                         </div>
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_deuterium">Deuterio</label>
-                            <div class="relative">
-                                <input type="text" id="costDeut" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-blue-500 outline-none font-mono text-lg">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg></div>
-                            </div>
+                            <input type="text" id="costDeut" placeholder="0" readonly class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none font-mono text-lg cursor-not-allowed opacity-70">
                         </div>
                     </div>
                 </div>
@@ -250,27 +243,56 @@
     <script>
         const basePacks = [{ cost: 200, amount: 5100000 }, { cost: 100, amount: 2525000 }, { cost: 50, amount: 1140000 }, { cost: 25, amount: 480000 }, { cost: 10, amount: 150000 }, { cost: 5, amount: 60000 }];
         
-        let queueTotalMet = 0;
-        let queueTotalCry = 0;
-        let queueTotalDeut = 0;
+        // Array che contiene la coda degli oggetti
+        let queueItems = [];
 
         document.addEventListener('langLoaded', () => {
             calculate();
-            updateBuilderItems();
+            toggleBuilderFields();
         });
 
         // --- BUILDER LOGIC ---
-        function updateBuilderItems() {
+        function toggleBuilderFields() {
             const cat = document.getElementById('builderCat').value;
-            const itemSelect = document.getElementById('builderItem');
-            itemSelect.innerHTML = "";
-            
             const items = OGAME_DB[cat].items;
+            const itemSelect = document.getElementById('builderItem');
+            
+            // Popola Select
+            itemSelect.innerHTML = "";
             for (const key in items) {
                 const opt = document.createElement('option');
                 opt.value = key;
-                opt.innerText = t(key); // USA t(key) per prendere il nome dal file di lingua
+                opt.innerText = t(key);
                 itemSelect.appendChild(opt);
+            }
+
+            // Mostra/Nascondi e Rinomina
+            const levelCont = document.getElementById('fieldLevelContainer');
+            const multCont = document.getElementById('fieldMultContainer');
+            const lblLevel = document.getElementById('lblLevel');
+            const lblMult = document.getElementById('lblMult');
+            const multPrefix = document.getElementById('multPrefix');
+
+            if (cat === 'fleet') {
+                // Flotta: No Livello, Moltiplicatore diventa Quantità
+                levelCont.classList.add('hidden');
+                multCont.classList.remove('hidden');
+                lblMult.innerText = t('lbl_quantity');
+                multPrefix.innerText = '';
+                document.getElementById('builderMult').placeholder = "1";
+            } else if (cat === 'research') {
+                // Ricerche: Si Livello, No Moltiplicatore (Fisso a 1)
+                levelCont.classList.remove('hidden');
+                multCont.classList.add('hidden');
+                lblLevel.innerText = t('lbl_level');
+                document.getElementById('builderMult').value = 1;
+            } else {
+                // Strutture/LF: Si Livello, Si Moltiplicatore (Pianeti)
+                levelCont.classList.remove('hidden');
+                multCont.classList.remove('hidden');
+                lblLevel.innerText = t('lbl_level');
+                lblMult.innerText = t('lbl_planets');
+                multPrefix.innerText = 'x';
             }
         }
 
@@ -278,41 +300,84 @@
             const cat = document.getElementById('builderCat').value;
             const itemKey = document.getElementById('builderItem').value;
             const level = parseInt(document.getElementById('builderLevel').value) || 1;
-            const multiplier = parseInt(document.getElementById('builderMult').value) || 1;
+            let multiplier = parseInt(document.getElementById('builderMult').value) || 1;
             
+            // Force mult=1 per Ricerche
+            if (cat === 'research') multiplier = 1;
+
             const itemData = OGAME_DB[cat].items[itemKey];
             let costM=0, costC=0, costD=0;
 
             if (itemData.type === 'unit') {
-                costM = itemData.b[0] * level;
-                costC = itemData.b[1] * level;
-                costD = itemData.b[2] * level;
+                // Flotta (Quantità è nel moltiplicatore)
+                costM = itemData.b[0] * multiplier;
+                costC = itemData.b[1] * multiplier;
+                costD = itemData.b[2] * multiplier;
             } else {
+                // Strutture/Ricerche
                 const factor = Math.pow(itemData.f, level - 1);
-                costM = Math.floor(itemData.b[0] * factor);
-                costC = Math.floor(itemData.b[1] * factor);
-                costD = Math.floor(itemData.b[2] * factor);
+                costM = Math.floor(itemData.b[0] * factor) * multiplier;
+                costC = Math.floor(itemData.b[1] * factor) * multiplier;
+                costD = Math.floor(itemData.b[2] * factor) * multiplier;
             }
 
-            costM *= multiplier; costC *= multiplier; costD *= multiplier;
-            queueTotalMet += costM; queueTotalCry += costC; queueTotalDeut += costD;
+            // Aggiungi all'array
+            queueItems.push({
+                nameKey: itemKey,
+                level: level,
+                mult: multiplier,
+                cat: cat,
+                m: costM, c: costC, d: costD
+            });
 
+            renderQueue();
+        }
+
+        function removeFromQueue(index) {
+            queueItems.splice(index, 1);
+            renderQueue();
+        }
+
+        function renderQueue() {
             const queueDiv = document.getElementById('builderQueue');
-            if(queueDiv.innerHTML.includes("Lista vuota") || queueDiv.innerHTML.includes("List is empty")) queueDiv.innerHTML = "";
+            queueDiv.innerHTML = "";
 
-            const itemName = t(itemKey); // Traduzione nome in lista
-            const row = document.createElement('div');
-            row.className = "flex justify-between items-center text-gray-300 border-b border-gray-700/50 pb-1 last:border-0";
-            row.innerHTML = `<div><span class="font-bold text-white">${multiplier}x</span> ${itemName} <span class="text-xs text-gray-500">(Lvl/Qta: ${level})</span></div><div class="text-xs text-gray-400">M: ${formatShort(costM)} C: ${formatShort(costC)} D: ${formatShort(costD)}</div>`;
-            queueDiv.appendChild(row);
+            if (queueItems.length === 0) {
+                queueDiv.innerHTML = `<div class="text-center text-gray-600 italic">${t('queue_empty')}</div>`;
+            } else {
+                queueItems.forEach((item, idx) => {
+                    const row = document.createElement('div');
+                    row.className = "flex justify-between items-center text-gray-300 border-b border-gray-700/50 pb-1 last:border-0";
+                    
+                    let infoText = "";
+                    if(item.cat === 'fleet') infoText = `(${t('lbl_quantity')}: ${item.mult})`;
+                    else if(item.cat === 'research') infoText = `(Lvl: ${item.level})`;
+                    else infoText = `(Lvl: ${item.level} - ${item.mult}x)`;
 
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <button onclick="removeFromQueue(${idx})" class="text-red-500 hover:text-red-400 font-bold px-1">✕</button>
+                            <div>
+                                <span class="text-white font-bold">${t(item.nameKey)}</span> <span class="text-[10px] text-gray-500">${infoText}</span>
+                            </div>
+                        </div>
+                        <div class="text-[10px] text-gray-400 font-mono text-right">
+                            <span class="text-gray-500">M:</span>${formatShort(item.m)} <span class="text-green-900">C:</span>${formatShort(item.c)} <span class="text-blue-900">D:</span>${formatShort(item.d)}
+                        </div>
+                    `;
+                    queueDiv.appendChild(row);
+                });
+            }
             updateMainInputs();
         }
 
         function updateMainInputs() {
-            document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(queueTotalMet);
-            document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(queueTotalCry);
-            document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(queueTotalDeut);
+            let totalM = 0, totalC = 0, totalD = 0;
+            queueItems.forEach(i => { totalM += i.m; totalC += i.c; totalD += i.d; });
+
+            document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalM);
+            document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalC);
+            document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalD);
             calculate();
         }
 
@@ -323,7 +388,7 @@
             return num;
         }
 
-        // --- CALCOLO & PARSING (Standard) ---
+        // --- CALCOLO & PARSING ---
         function formatInput(input) {
             let value = input.value.replace(/\D/g, '');
             if (value === '') { input.value = ''; return; }
@@ -333,26 +398,36 @@
         function setRate(m, c, d) { document.getElementById('rateCry').value = c; document.getElementById('rateDeut').value = d; calculate(); }
         
         function resetFields() { 
-            document.getElementById('costMetal').value = ''; document.getElementById('costCrystal').value = ''; document.getElementById('costDeut').value = ''; document.getElementById('pasteArea').value = ''; 
+            queueItems = [];
+            renderQueue(); // Questo resetterà anche gli input a 0
+            document.getElementById('pasteArea').value = ''; 
             document.getElementById('shopDiscount').value = "0"; document.getElementById('moBonus').value = "0"; document.getElementById('parseMultiplier').value = "1"; 
-            queueTotalMet=0; queueTotalCry=0; queueTotalDeut=0;
-            document.getElementById('builderQueue').innerHTML = `<div class="text-center text-gray-600 italic">${t('queue_empty')}</div>`;
             calculate(); 
         }
 
         function parseString() {
             const text = document.getElementById('pasteArea').value;
             const multiplier = parseInt(document.getElementById('parseMultiplier').value) || 1;
-            let totalMet = 0, totalCry = 0, totalDeut = 0;
+            let m=0, c=0, d=0;
             const regexMet = /([\d\.]+)\s*Metallo/gi, regexCry = /([\d\.]+)\s*Cristallo/gi, regexDeut = /([\d\.]+)\s*Deuterio/gi;
             let match;
-            while ((match = regexMet.exec(text)) !== null) totalMet += parseInt(match[1].replace(/\./g, '')) || 0;
-            while ((match = regexCry.exec(text)) !== null) totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
-            while ((match = regexDeut.exec(text)) !== null) totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
-            totalMet *= multiplier; totalCry *= multiplier; totalDeut *= multiplier;
+            while ((match = regexMet.exec(text)) !== null) m += parseInt(match[1].replace(/\./g, '')) || 0;
+            while ((match = regexCry.exec(text)) !== null) c += parseInt(match[1].replace(/\./g, '')) || 0;
+            while ((match = regexDeut.exec(text)) !== null) d += parseInt(match[1].replace(/\./g, '')) || 0;
             
-            queueTotalMet += totalMet; queueTotalCry += totalCry; queueTotalDeut += totalDeut;
-            updateMainInputs();
+            m *= multiplier; c *= multiplier; d *= multiplier;
+            
+            if (m>0 || c>0 || d>0) {
+                // Aggiungi come riga speciale in Coda
+                queueItems.push({
+                    nameKey: 'imported_data', // Chiave per traduzione
+                    level: '-',
+                    mult: multiplier,
+                    cat: 'import',
+                    m: m, c: c, d: d
+                });
+                renderQueue();
+            } else if (text.trim().length > 0) alert("Nessuna risorsa trovata.");
         }
 
         function calculate() {
