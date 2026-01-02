@@ -43,22 +43,29 @@
     <header class="relative bg-gradient-to-b from-[#1c2128] to-ogame-bg border-b border-ogame-border pt-8 pb-12 px-4 mb-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
+                <div class="mb-2">
+                    <select id="langSelector" onchange="setLanguage(this.value)" class="bg-[#0d1014] border border-gray-700 text-xs text-gray-400 rounded px-2 py-1 focus:outline-none">
+                        <option value="it">🇮🇹 Italiano</option>
+                        <option value="en">🇬🇧 English</option>
+                    </select>
+                </div>
+
                 <a href="index.html" class="inline-flex items-center text-sm text-gray-500 hover:text-ogame-accent transition mb-2 group">
                     <svg class="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    Torna all'Hub
+                    <span data-i18n="nav_back">Torna all'Hub</span>
                 </a>
                 <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">
-                    Pack <span class="text-ogame-accent">Calculator</span>
+                    <span data-i18n="pack_calc_title">Pack Calculator</span>
                 </h1>
-                <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base">
+                <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="pack_calc_desc">
                     Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
                 </p>
             </div>
             
             <div class="flex gap-2 bg-ogame-panel p-2 rounded-xl border border-ogame-border shadow-lg">
-                 <button onclick="resetFields()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-red-900/20 transition text-gray-400 hover:text-ogame-danger group" title="Pulisci campi">
+                 <button onclick="resetFields()" class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-red-900/20 transition text-gray-400 hover:text-ogame-danger group">
                     <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    <span class="text-[9px] uppercase font-bold">Reset</span>
+                    <span class="text-[9px] uppercase font-bold" data-i18n="btn_reset">Reset</span>
                 </button>
             </div>
         </div>
@@ -74,12 +81,11 @@
                     <div class="absolute top-0 left-0 w-1 h-full bg-ogame-accent"></div>
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        Importa da OGLight (Multi-linea)
+                        <span data-i18n="import_title">Importa da OGLight</span>
                     </h3>
                     
                     <div class="relative">
-                        <textarea id="pasteArea" rows="4" placeholder="Incolla qui i costi (es: 4.278.266 Metallo...).
-Puoi incollare più righe insieme." 
+                        <textarea id="pasteArea" rows="4" data-i18n="import_placeholder" placeholder="Incolla qui i costi..." 
                             class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-4 text-sm text-gray-300 focus:border-ogame-accent focus:ring-1 focus:ring-ogame-accent outline-none transition font-mono resize-none"></textarea>
                         
                         <div class="absolute bottom-3 right-3 flex items-center gap-2 bg-[#161b22] p-1 rounded-lg border border-gray-700/50 shadow-lg">
@@ -88,7 +94,7 @@ Puoi incollare più righe insieme."
                                 <input type="number" id="parseMultiplier" value="1" min="1" 
                                     class="w-8 bg-transparent text-white text-xs font-bold focus:outline-none text-right font-mono">
                             </div>
-                            <button onclick="parseString()" class="px-4 py-1.5 bg-ogame-accent hover:bg-blue-600 text-white text-xs font-bold rounded shadow transition">
+                            <button onclick="parseString()" class="px-4 py-1.5 bg-ogame-accent hover:bg-blue-600 text-white text-xs font-bold rounded shadow transition" data-i18n="btn_extract">
                                 ESTRAI
                             </button>
                         </div>
@@ -96,11 +102,11 @@ Puoi incollare più righe insieme."
                 </div>
 
                 <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative">
-                    <h3 class="text-lg font-bold text-white mb-6">Costi Risorse Totali</h3>
+                    <h3 class="text-lg font-bold text-white mb-6" data-i18n="lbl_costs">Costi Risorse</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="relative group">
-                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Metallo</label>
+                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_metal">Metallo</label>
                             <div class="relative">
                                 <input type="text" id="costMetal" placeholder="0" oninput="formatInput(this); calculate()" 
                                     class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-ogame-accent outline-none transition font-mono text-lg">
@@ -111,7 +117,7 @@ Puoi incollare più righe insieme."
                         </div>
 
                         <div class="relative group">
-                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Cristallo</label>
+                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_crystal">Cristallo</label>
                             <div class="relative">
                                 <input type="text" id="costCrystal" placeholder="0" oninput="formatInput(this); calculate()" 
                                     class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 outline-none transition font-mono text-lg">
@@ -122,7 +128,7 @@ Puoi incollare più righe insieme."
                         </div>
 
                         <div class="relative group">
-                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2">Deuterio</label>
+                            <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_deuterium">Deuterio</label>
                             <div class="relative">
                                 <input type="text" id="costDeut" placeholder="0" oninput="formatInput(this); calculate()" 
                                     class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-blue-500 outline-none transition font-mono text-lg">
@@ -137,7 +143,7 @@ Puoi incollare più righe insieme."
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-sm font-bold text-gray-400 uppercase">Tasso (Met : Cri : Deu)</h3>
+                            <h3 class="text-sm font-bold text-gray-400 uppercase" data-i18n="lbl_rates">Tasso (Met : Cri : Deu)</h3>
                             <button onclick="setRate(3,2,1)" class="text-[10px] bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded border border-gray-600 text-gray-300">Default 3:2:1</button>
                         </div>
                         <div class="flex items-center gap-2">
@@ -151,13 +157,13 @@ Puoi incollare più righe insieme."
                     </div>
 
                     <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl">
-                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4">Valore Pacchetto (Metallo)</h3>
+                        <h3 class="text-sm font-bold text-gray-400 uppercase mb-4" data-i18n="lbl_pack_val">Valore Pacchetto (Metallo)</h3>
                         <div class="relative">
                             <input type="text" id="packValue" value="300.000.000" oninput="formatInput(this); calculate()" 
                                 class="w-full bg-[#0d1014] border border-ogame-warning/50 rounded-lg p-3 text-ogame-warning font-bold focus:border-ogame-warning outline-none text-center text-lg shadow-[0_0_10px_rgba(210,153,34,0.1)]">
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-mono">MET</div>
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-2 text-center" id="packSourceLabel">Prod. giornaliera dal Metal Calculator.</p>
+                        <p class="text-[10px] text-gray-500 mt-2 text-center" id="packSourceLabel" data-i18n="pack_source_manual">Inserisci manuale.</p>
                     </div>
                 </div>
             </div>
@@ -168,14 +174,14 @@ Puoi incollare più righe insieme."
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-warning"></div>
                     
                     <div class="text-center mb-6">
-                        <div class="text-xs text-gray-500 uppercase tracking-widest mb-2">Costo Totale (MSE)</div>
+                        <div class="text-xs text-gray-500 uppercase tracking-widest mb-2" data-i18n="lbl_cost_mse">Costo Totale (MSE)</div>
                         <div id="totalMSE" class="text-3xl font-mono font-bold text-white break-all">0</div>
                     </div>
 
                     <div class="border-t border-gray-700/50 my-6"></div>
 
                     <div class="text-center">
-                        <div class="text-sm text-ogame-warning uppercase tracking-widest mb-2 font-bold">Pacchetti Necessari</div>
+                        <div class="text-sm text-ogame-warning uppercase tracking-widest mb-2 font-bold" data-i18n="lbl_packs_needed">Pacchetti Necessari</div>
                         <div id="packsNeeded" class="text-6xl font-bold text-white drop-shadow-[0_0_15px_rgba(210,153,34,0.5)]">0</div>
                     </div>
                 </div>
@@ -187,10 +193,10 @@ Puoi incollare più righe insieme."
                         <div class="flex justify-between items-center">
                             <h3 class="text-sm font-bold text-gray-300 uppercase flex items-center gap-2">
                                 <svg class="w-4 h-4 text-ogame-dm" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6V7z"/><path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1v-2H2a1 1 0 110-2h1V7a2 2 0 012-2h2V2zM5 7v6h10V7H5z" clip-rule="evenodd"/></svg>
-                                Costo MO
+                                <span data-i18n="lbl_cost_dm">Costo MO</span>
                             </h3>
                             <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
-                                 <span class="text-[10px] text-gray-400 uppercase font-bold mr-2">Sconto Shop:</span>
+                                 <span class="text-[10px] text-gray-400 uppercase font-bold mr-2" data-i18n="lbl_shop_discount">Sconto Shop:</span>
                                  <select id="shopDiscount" onchange="calculate()" class="bg-[#0d1014] text-xs text-white outline-none text-right font-bold cursor-pointer border-none focus:ring-0 w-24">
                                      <option value="0">0%</option>
                                      <option value="20">-20%</option>
@@ -200,7 +206,7 @@ Puoi incollare più righe insieme."
                         </div>
                         
                         <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
-                             <span class="text-[10px] text-gray-400 uppercase font-bold">Evento Bonus MO:</span>
+                             <span class="text-[10px] text-gray-400 uppercase font-bold" data-i18n="lbl_event_bonus">Evento Bonus MO:</span>
                              <select id="moBonus" onchange="calculate()" class="bg-[#0d1014] text-xs text-white outline-none text-right font-bold cursor-pointer border-none focus:ring-0 w-24">
                                  <option value="0">Nessuno</option>
                                  <option value="30">+30% MO</option>
@@ -214,7 +220,7 @@ Puoi incollare più righe insieme."
                     </div>
 
                     <div class="text-center">
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest">Totale MO Necessaria</div>
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest" data-i18n="lbl_cost_dm">Totale MO Necessaria</div>
                         <div id="moTotal" class="text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(120,52,188,0.5)] mb-1">0</div>
                         <div class="text-[9px] text-gray-400" id="moPerPackLabel"></div>
                     </div>
@@ -224,16 +230,16 @@ Puoi incollare più righe insieme."
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-money"></div>
                     
                     <h3 class="text-sm font-bold text-gray-300 uppercase mb-4 flex items-center gap-2">
-                        <span class="text-ogame-money text-lg">€</span> Stima Costo Ottimizzato
+                        <span class="text-ogame-money text-lg">€</span> <span data-i18n="lbl_opt_cost">Stima Costo Ottimizzato</span>
                     </h3>
 
                     <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]">
-                        </div>
+                    </div>
 
                     <div class="border-t border-gray-700/50 my-3"></div>
                     
                     <div class="flex justify-between items-end">
-                         <span class="text-xs text-gray-500 uppercase font-bold">Totale</span>
+                         <span class="text-xs text-gray-500 uppercase font-bold" data-i18n="lbl_total">Totale</span>
                          <span id="euroTotal" class="text-2xl font-bold text-ogame-money">0 €</span>
                     </div>
                 </div>
@@ -243,248 +249,255 @@ Puoi incollare più righe insieme."
         </div>
     </div>
 
-<script>
-    // PREZZI ARROTONDATI BASE
-    const basePacks = [
-        { cost: 200, amount: 5100000 },
-        { cost: 100, amount: 2525000 },
-        { cost: 50, amount: 1140000 },
-        { cost: 25, amount: 480000 },
-        { cost: 10, amount: 150000 },
-        { cost: 5, amount: 60000 }
-    ];
+    <script src="js/lang.js"></script>
 
-    function formatInput(input) {
-        let value = input.value.replace(/\D/g, '');
-        if (value === '') { input.value = ''; return; }
-        input.value = new Intl.NumberFormat('it-IT').format(BigInt(value));
-    }
+    <script>
+        // PREZZI ARROTONDATI BASE
+        const basePacks = [
+            { cost: 200, amount: 5100000 },
+            { cost: 100, amount: 2525000 },
+            { cost: 50, amount: 1140000 },
+            { cost: 25, amount: 480000 },
+            { cost: 10, amount: 150000 },
+            { cost: 5, amount: 60000 }
+        ];
 
-    function getRawValue(id) {
-        const val = document.getElementById(id).value.replace(/\./g, '');
-        return val === '' ? 0 : parseInt(val);
-    }
+        // Listener: Ricalcola quando la lingua cambia
+        document.addEventListener('langLoaded', () => {
+            calculate();
+        });
 
-    function setRate(m, c, d) {
-        document.getElementById('rateCry').value = c;
-        document.getElementById('rateDeut').value = d;
-        calculate();
-    }
-
-    function resetFields() {
-        document.getElementById('costMetal').value = '';
-        document.getElementById('costCrystal').value = '';
-        document.getElementById('costDeut').value = '';
-        document.getElementById('pasteArea').value = '';
-        document.getElementById('shopDiscount').value = "0"; 
-        document.getElementById('moBonus').value = "0"; 
-        document.getElementById('parseMultiplier').value = "1";
-        calculate();
-    }
-
-    // --- PARSING MULTI-RIGA CON MOLTIPLICATORE ---
-    function parseString() {
-        const text = document.getElementById('pasteArea').value;
-        const multiplier = parseInt(document.getElementById('parseMultiplier').value) || 1;
-        
-        let totalMet = 0;
-        let totalCry = 0;
-        let totalDeut = 0;
-
-        const regexMet = /([\d\.]+)\s*Metallo/gi;
-        const regexCry = /([\d\.]+)\s*Cristallo/gi;
-        const regexDeut = /([\d\.]+)\s*Deuterio/gi;
-
-        let match;
-        while ((match = regexMet.exec(text)) !== null) totalMet += parseInt(match[1].replace(/\./g, '')) || 0;
-        while ((match = regexCry.exec(text)) !== null) totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
-        while ((match = regexDeut.exec(text)) !== null) totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
-
-        // Applica moltiplicatore
-        totalMet *= multiplier;
-        totalCry *= multiplier;
-        totalDeut *= multiplier;
-
-        if (totalMet > 0 || totalCry > 0 || totalDeut > 0) {
-            document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalMet);
-            document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalCry);
-            document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalDeut);
-        } else if (text.trim().length > 0) {
-            alert("Nessuna risorsa trovata.");
+        function formatInput(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value === '') { input.value = ''; return; }
+            input.value = new Intl.NumberFormat('it-IT').format(BigInt(value));
         }
 
-        calculate();
-    }
-
-    function calculate() {
-        const met = getRawValue('costMetal');
-        const cry = getRawValue('costCrystal');
-        const deut = getRawValue('costDeut');
-        const rM = 3.0; 
-        const rC = parseFloat(document.getElementById('rateCry').value) || 2;
-        const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
-        const packVal = getRawValue('packValue');
-        
-        const shopDiscount = parseFloat(document.getElementById('shopDiscount').value) || 0;
-        const bonusPercent = parseInt(document.getElementById('moBonus').value);
-
-        const cryInMet = cry * (rM / rC);
-        const deutInMet = deut * (rM / rD);
-        const totalMSE = met + cryInMet + deutInMet;
-
-        let packs = 0;
-        if (packVal > 0 && totalMSE > 0) packs = Math.ceil(totalMSE / packVal);
-
-        const basePackPrice = 60000;
-        const moPerPackCost = basePackPrice * (1 - (shopDiscount / 100));
-        
-        const totalMONeeded = packs * moPerPackCost;
-
-        document.getElementById('totalMSE').innerText = new Intl.NumberFormat('it-IT').format(Math.ceil(totalMSE));
-        document.getElementById('packsNeeded').innerText = new Intl.NumberFormat('it-IT').format(packs);
-        document.getElementById('moTotal').innerText = new Intl.NumberFormat('it-IT').format(totalMONeeded);
-        document.getElementById('moPerPackLabel').innerText = `${new Intl.NumberFormat('it-IT').format(moPerPackCost)} MO / pack`;
-
-        calculateSmartEuro(totalMONeeded, bonusPercent);
-    }
-
-    // --- ALGORITMO RICORSIVO OTTIMIZZATO ---
-    function calculateSmartEuro(targetMO, bonusPercent) {
-        if (targetMO <= 0) {
-            renderResult(0, []);
-            return;
+        function getRawValue(id) {
+            const val = document.getElementById(id).value.replace(/\./g, '');
+            return val === '' ? 0 : parseInt(val);
         }
 
-        const bonusMultiplier = 1 + (bonusPercent / 100);
-        const currentPacks = basePacks.map(p => ({
-            cost: p.cost,
-            amount: Math.floor(p.amount * bonusMultiplier)
-        }));
+        function setRate(m, c, d) {
+            document.getElementById('rateCry').value = c;
+            document.getElementById('rateDeut').value = d;
+            calculate();
+        }
 
-        let bestSolution = findBestCombination(targetMO, currentPacks);
-        renderResult(bestSolution.totalCost, bestSolution.packList);
-    }
+        function resetFields() {
+            document.getElementById('costMetal').value = '';
+            document.getElementById('costCrystal').value = '';
+            document.getElementById('costDeut').value = '';
+            document.getElementById('pasteArea').value = '';
+            document.getElementById('shopDiscount').value = "0"; 
+            document.getElementById('moBonus').value = "0"; 
+            document.getElementById('parseMultiplier').value = "1";
+            calculate();
+        }
 
-    function findBestCombination(target, packs) {
-        let currentTarget = target;
-        let totalCost = 0;
-        let packList = [];
+        // --- PARSING MULTI-RIGA CON MOLTIPLICATORE ---
+        function parseString() {
+            const text = document.getElementById('pasteArea').value;
+            const multiplier = parseInt(document.getElementById('parseMultiplier').value) || 1;
+            
+            let totalMet = 0;
+            let totalCry = 0;
+            let totalDeut = 0;
 
-        for (let i = 0; i < packs.length; i++) {
-            let pack = packs[i];
+            const regexMet = /([\d\.]+)\s*Metallo/gi;
+            const regexCry = /([\d\.]+)\s*Cristallo/gi;
+            const regexDeut = /([\d\.]+)\s*Deuterio/gi;
 
-            if (i === packs.length - 1) {
-                let count = Math.ceil(currentTarget / pack.amount);
-                if (count > 0) {
-                    totalCost += count * pack.cost;
-                    packList.push({ count: count, pack: pack });
+            let match;
+            while ((match = regexMet.exec(text)) !== null) totalMet += parseInt(match[1].replace(/\./g, '')) || 0;
+            while ((match = regexCry.exec(text)) !== null) totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
+            while ((match = regexDeut.exec(text)) !== null) totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
+
+            // Applica moltiplicatore
+            totalMet *= multiplier;
+            totalCry *= multiplier;
+            totalDeut *= multiplier;
+
+            if (totalMet > 0 || totalCry > 0 || totalDeut > 0) {
+                document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalMet);
+                document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalCry);
+                document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalDeut);
+            } else if (text.trim().length > 0) {
+                alert("Nessuna risorsa trovata.");
+            }
+
+            calculate();
+        }
+
+        function calculate() {
+            const met = getRawValue('costMetal');
+            const cry = getRawValue('costCrystal');
+            const deut = getRawValue('costDeut');
+            const rM = 3.0; 
+            const rC = parseFloat(document.getElementById('rateCry').value) || 2;
+            const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
+            const packVal = getRawValue('packValue');
+            
+            const shopDiscount = parseFloat(document.getElementById('shopDiscount').value) || 0;
+            const bonusPercent = parseInt(document.getElementById('moBonus').value);
+
+            const cryInMet = cry * (rM / rC);
+            const deutInMet = deut * (rM / rD);
+            const totalMSE = met + cryInMet + deutInMet;
+
+            let packs = 0;
+            if (packVal > 0 && totalMSE > 0) packs = Math.ceil(totalMSE / packVal);
+
+            const basePackPrice = 60000;
+            const moPerPackCost = basePackPrice * (1 - (shopDiscount / 100));
+            
+            const totalMONeeded = packs * moPerPackCost;
+
+            document.getElementById('totalMSE').innerText = new Intl.NumberFormat('it-IT').format(Math.ceil(totalMSE));
+            document.getElementById('packsNeeded').innerText = new Intl.NumberFormat('it-IT').format(packs);
+            document.getElementById('moTotal').innerText = new Intl.NumberFormat('it-IT').format(totalMONeeded);
+            document.getElementById('moPerPackLabel').innerText = `${new Intl.NumberFormat('it-IT').format(moPerPackCost)} MO / pack`;
+
+            calculateSmartEuro(totalMONeeded, bonusPercent);
+        }
+
+        // --- ALGORITMO RICORSIVO OTTIMIZZATO ---
+        function calculateSmartEuro(targetMO, bonusPercent) {
+            if (targetMO <= 0) {
+                renderResult(0, []);
+                return;
+            }
+
+            const bonusMultiplier = 1 + (bonusPercent / 100);
+            const currentPacks = basePacks.map(p => ({
+                cost: p.cost,
+                amount: Math.floor(p.amount * bonusMultiplier)
+            }));
+
+            let bestSolution = findBestCombination(targetMO, currentPacks);
+            renderResult(bestSolution.totalCost, bestSolution.packList);
+        }
+
+        function findBestCombination(target, packs) {
+            let currentTarget = target;
+            let totalCost = 0;
+            let packList = [];
+
+            for (let i = 0; i < packs.length; i++) {
+                let pack = packs[i];
+
+                if (i === packs.length - 1) {
+                    let count = Math.ceil(currentTarget / pack.amount);
+                    if (count > 0) {
+                        totalCost += count * pack.cost;
+                        packList.push({ count: count, pack: pack });
+                    }
+                    break;
                 }
-                break;
-            }
 
-            let ceilingCount = Math.ceil(currentTarget / pack.amount);
-            let ceilingCost = ceilingCount * pack.cost;
+                let ceilingCount = Math.ceil(currentTarget / pack.amount);
+                let ceilingCost = ceilingCount * pack.cost;
 
-            let floorCount = Math.floor(currentTarget / pack.amount);
-            let remainder = currentTarget - (floorCount * pack.amount);
-            
-            if (remainder === 0) {
-                totalCost += floorCount * pack.cost;
-                if (floorCount > 0) packList.push({ count: floorCount, pack: pack });
-                break;
-            }
-
-            let smallerPacks = packs.slice(i + 1);
-            let remainderSolution = solveRemainder(remainder, smallerPacks);
-            
-            let floorPathCost = (floorCount * pack.cost) + remainderSolution.cost;
-
-            if (ceilingCost <= floorPathCost) {
-                totalCost += ceilingCost;
-                if (ceilingCount > 0) packList.push({ count: ceilingCount, pack: pack });
-                break; 
-            } else {
-                if (floorCount > 0) {
+                let floorCount = Math.floor(currentTarget / pack.amount);
+                let remainder = currentTarget - (floorCount * pack.amount);
+                
+                if (remainder === 0) {
                     totalCost += floorCount * pack.cost;
-                    packList.push({ count: floorCount, pack: pack });
+                    if (floorCount > 0) packList.push({ count: floorCount, pack: pack });
+                    break;
                 }
-                currentTarget = remainder; 
-            }
-        }
 
-        return { totalCost, packList };
-    }
+                let smallerPacks = packs.slice(i + 1);
+                let remainderSolution = solveRemainder(remainder, smallerPacks);
+                
+                let floorPathCost = (floorCount * pack.cost) + remainderSolution.cost;
 
-    function solveRemainder(amount, availablePacks) {
-        if (amount <= 0) return { cost: 0 };
-        if (availablePacks.length === 1) {
-            let p = availablePacks[0];
-            return { cost: Math.ceil(amount / p.amount) * p.cost };
-        }
-
-        let pack = availablePacks[0];
-        let ceilingCost = Math.ceil(amount / pack.amount) * pack.cost;
-        
-        let floorCount = Math.floor(amount / pack.amount);
-        let rem = amount - (floorCount * pack.amount);
-        let subRes = solveRemainder(rem, availablePacks.slice(1));
-        let floorPathCost = (floorCount * pack.cost) + subRes.cost;
-
-        return { cost: Math.min(ceilingCost, floorPathCost) };
-    }
-
-    function renderResult(cost, list) {
-        document.getElementById('euroTotal').innerText = cost + " €";
-
-        // Aggrega
-        let displayList = [];
-        list.forEach(item => {
-            let found = displayList.find(x => x.pack.cost === item.pack.cost);
-            if(found) found.count += item.count;
-            else displayList.push({ count: item.count, pack: item.pack });
-        });
-        displayList.sort((a,b) => b.pack.cost - a.pack.cost);
-
-        let html = '';
-        displayList.forEach(item => {
-             html += `
-            <div class="flex justify-between items-center border-b border-gray-800 pb-2 last:border-0">
-                <div class="flex flex-col">
-                    <span class="text-white font-bold">${item.count}x Pacchetto ${item.pack.cost} €</span>
-                    <span class="text-[10px] text-gray-500">Contiene: ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} MO cad.</span>
-                </div>
-                <span class="text-ogame-money font-mono font-bold">${(item.count * item.pack.cost)} €</span>
-            </div>`;
-        });
-        document.getElementById('euroList').innerHTML = html || '<div class="text-center italic opacity-50">Nessun pacchetto</div>';
-    }
-
-    window.onload = function() {
-        const cachedMetal = localStorage.getItem('ogameDailyMetal');
-        if (cachedMetal) {
-            const rawVal = parseInt(cachedMetal);
-            if (rawVal > 0) {
-                document.getElementById('packValue').value = new Intl.NumberFormat('it-IT').format(rawVal);
-                const label = document.getElementById('packSourceLabel');
-                if(label) {
-                    label.innerText = "Caricato automaticamente dal Metal Calculator.";
-                    label.classList.add("text-ogame-success");
+                if (ceilingCost <= floorPathCost) {
+                    totalCost += ceilingCost;
+                    if (ceilingCount > 0) packList.push({ count: ceilingCount, pack: pack });
+                    break; 
+                } else {
+                    if (floorCount > 0) {
+                        totalCost += floorCount * pack.cost;
+                        packList.push({ count: floorCount, pack: pack });
+                    }
+                    currentTarget = remainder; 
                 }
             }
-        }
-        calculate();
-    }
-</script>
 
-<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-<script>
-  kofiWidgetOverlay.draw('galax95', {
-    'type': 'floating-chat',
-    'floating-chat.donateButton.text': 'Support me',
-    'floating-chat.donateButton.background-color': '#3399ff',
-    'floating-chat.donateButton.text-color': '#fff'
-  });
-</script>
+            return { totalCost, packList };
+        }
+
+        function solveRemainder(amount, availablePacks) {
+            if (amount <= 0) return { cost: 0 };
+            if (availablePacks.length === 1) {
+                let p = availablePacks[0];
+                return { cost: Math.ceil(amount / p.amount) * p.cost };
+            }
+
+            let pack = availablePacks[0];
+            let ceilingCost = Math.ceil(amount / pack.amount) * pack.cost;
+            
+            let floorCount = Math.floor(amount / pack.amount);
+            let rem = amount - (floorCount * pack.amount);
+            let subRes = solveRemainder(rem, availablePacks.slice(1));
+            let floorPathCost = (floorCount * pack.cost) + subRes.cost;
+
+            return { cost: Math.min(ceilingCost, floorPathCost) };
+        }
+
+        function renderResult(cost, list) {
+            document.getElementById('euroTotal').innerText = cost + " €";
+
+            let displayList = [];
+            list.forEach(item => {
+                let found = displayList.find(x => x.pack.cost === item.pack.cost);
+                if(found) found.count += item.count;
+                else displayList.push({ count: item.count, pack: item.pack });
+            });
+            displayList.sort((a,b) => b.pack.cost - a.pack.cost);
+
+            // USO t() PER TRADURRE I TESTI GENERATI DINAMICAMENTE
+            let html = '';
+            displayList.forEach(item => {
+                 html += `
+                <div class="flex justify-between items-center border-b border-gray-800 pb-2 last:border-0">
+                    <div class="flex flex-col">
+                        <span class="text-white font-bold">${item.count}x ${t('shop_list_pack')} ${item.pack.cost} €</span>
+                        <span class="text-[10px] text-gray-500">${t('shop_list_contains')}: ${new Intl.NumberFormat('it-IT').format(item.pack.amount)} ${t('shop_list_each')}</span>
+                    </div>
+                    <span class="text-ogame-money font-mono font-bold">${(item.count * item.pack.cost)} €</span>
+                </div>`;
+            });
+            document.getElementById('euroList').innerHTML = html || `<div class="text-center italic opacity-50">${t('shop_list_empty')}</div>`;
+        }
+
+        window.onload = function() {
+            const cachedMetal = localStorage.getItem('ogameDailyMetal');
+            if (cachedMetal) {
+                const rawVal = parseInt(cachedMetal);
+                if (rawVal > 0) {
+                    document.getElementById('packValue').value = new Intl.NumberFormat('it-IT').format(rawVal);
+                    const label = document.getElementById('packSourceLabel');
+                    if(label) {
+                        label.innerText = t('pack_source_auto'); // Traduzione anche qui!
+                        label.classList.add("text-ogame-success");
+                    }
+                }
+            }
+            calculate();
+        }
+    </script>
+
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>
+      kofiWidgetOverlay.draw('galax95', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': 'Support me',
+        'floating-chat.donateButton.background-color': '#3399ff',
+        'floating-chat.donateButton.text-color': '#fff'
+      });
+    </script>
 
 </body>
 </html>
