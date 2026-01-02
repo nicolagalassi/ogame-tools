@@ -1,12 +1,20 @@
 {
-    "nav_back": "← Back to Hub",
+    "nav_back": "Back to Home",
     "btn_save": "Save",
     "btn_load": "Load",
     "btn_reset": "Reset",
     "btn_copy": "Copy",
     "copied": "Copied!",
     
-    "metal_calc_title": "Metal Calculator",
+    "index_title_suffix": "Value",
+    "index_desc": "Maximize your empire's value. Advanced calculators for production, crawlers, and shop.",
+    "card_metal_title": "Production Core",
+    "card_metal_desc": "Mine production calculator, crawler management, and lifeforms.",
+    "card_pack_title": "Pack Exchange",
+    "card_pack_desc": "Construction cost analysis and Dark Matter purchase optimization.",
+    "btn_open": "OPEN TOOL",
+
+    "metal_calc_title": "Production Core",
     "metal_calc_desc": "Optimize production, manage crawlers, and calculate daily resource package values.",
     "settings_title": "Account Settings",
     "lbl_eco_speed": "Economy Speed",
@@ -50,7 +58,7 @@
     "footer_prod_hour": "Hourly Production",
     "footer_pack_day": "Package (24h)",
 
-    "pack_calc_title": "Pack Calculator",
+    "pack_calc_title": "Pack Exchange",
     "pack_calc_desc": "Convert costs to MSE and optimize Dark Matter purchases.",
     "import_title": "Import Costs (OGLight)",
     "import_placeholder": "Paste costs here (e.g. 1.000 Metal...)",
