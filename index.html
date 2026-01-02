@@ -3,124 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OHub</title>
-    
+    <title>OValue | OGame Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        ogame: {
-                            bg: '#0d1014',       
-                            panel: '#161b22',    
-                            border: '#30363d',   
-                            accent: '#3399ff',   
-                            success: '#238636',  
-                            warning: '#d29922', 
-                            text: '#c9d1d9'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { ogame: { bg: '#0d1014', panel: '#161b22', border: '#30363d', accent: '#3399ff', success: '#238636', danger: '#da3633', warning: '#d29922', text: '#c9d1d9' } }, fontFamily: { sans: ['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'], mono: ['Consolas', 'Monaco', 'monospace'] } } } }
     </script>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪐</text></svg>">
 </head>
-<body class="bg-ogame-bg text-ogame-text font-sans min-h-screen flex flex-col">
+<body class="bg-ogame-bg text-ogame-text font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
-    <header class="py-16 px-4 text-center bg-gradient-to-b from-[#161b22] to-transparent border-b border-ogame-border">
-        <div class="max-w-4xl mx-auto relative">
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/4 opacity-[0.03] pointer-events-none">
-                <svg class="w-96 h-96 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 19h20L12 2zm0 3.8L18.4 17H5.6L12 5.8zM11 8v4h2V8h-2zm0 6v2h2v-2h-2z"/></svg>
-            </div>
-
-            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight relative">
-                OGame <span class="text-ogame-accent">Hub</span>
-            </h1>
-            <p class="text-lg text-gray-400 max-w-2xl mx-auto relative">
-                Una suite di strumenti avanzati per ottimizzare il tuo impero, calcolare le produzioni e massimizzare i profitti.
-            </p>
+    <div class="text-center mb-12 relative w-full max-w-4xl">
+        <div class="absolute top-0 right-0 flex flex-col items-center justify-center w-12 h-12 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group relative cursor-pointer" title="Lingua/Language">
+            <svg class="w-4 h-4 mb-0.5 group-hover:scale-110 transition pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+            <span id="langLabel" class="text-[9px] font-bold uppercase pointer-events-none">IT</span>
+            <select id="langSelector" onchange="setLanguage(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                <option value="it">Italiano</option>
+                <option value="en">English</option>
+            </select>
         </div>
-    </header>
 
-    <main class="flex-grow p-6 md:p-12 z-10 relative">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            <a href="metal.html" class="group relative bg-ogame-panel border border-ogame-border rounded-xl p-6 hover:border-ogame-accent transition-all duration-300 hover:shadow-[0_0_25px_rgba(51,153,255,0.15)] flex flex-col overflow-hidden">
-                <div class="absolute -top-6 -right-6 p-3 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-500 rotate-12 transform scale-150 pointer-events-none">
-                     <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M19.14 7.27l-6.87-4a1.9 1.9 0 0 0-1.9 0l-6.87 4A1.9 1.9 0 0 0 2.55 9v8a1.9 1.9 0 0 0 .95 1.65l6.87 4a1.9 1.9 0 0 0 1.9 0l6.87-4a1.9 1.9 0 0 0 .95-1.65V9a1.9 1.9 0 0 0-.95-1.73zM11.27 3.72a.91.91 0 0 1 .9 0l6.87 4a.91.91 0 0 1 0 1.57L12.73 13a.91.91 0 0 1-.9 0L5 9.28a.91.91 0 0 1 0-1.57zM4.45 17V9.86L11 13.67v7.47zm8 8.14v-7.47l6.55-3.82V17z"/></svg>
-                </div>
-                
-                <div class="flex items-center gap-4 mb-5 relative">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center border border-gray-700 group-hover:border-ogame-accent shadow-inner transition-colors group-hover:shadow-[0_0_15px_rgba(51,153,255,0.3)]">
-                        <svg class="w-8 h-8 text-gray-300 group-hover:text-ogame-accent transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-white group-hover:text-ogame-accent transition tracking-wide">Metal Calculator</h2>
-                        <span class="text-xs text-ogame-success font-medium uppercase tracking-wider">Attivo</span>
-                    </div>
-                </div>
-                
-                <p class="text-sm text-gray-400 mb-6 flex-grow leading-relaxed">
-                    Calcola la produzione esatta di metallo considerando posizioni, oggetti, forme di vita e plasma. Stima il valore dei pacchetti risorse 24h.
-                </p>
-                
-                <div class="flex items-center text-ogame-accent font-bold text-sm uppercase tracking-wider">
-                    Apri Tool <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </div>
-            </a>
-
-            <a href="pack.html" class="group relative bg-ogame-panel border border-ogame-border rounded-xl p-6 hover:border-ogame-warning transition-all duration-300 hover:shadow-[0_0_25px_rgba(210,153,34,0.15)] flex flex-col overflow-hidden">
-                <div class="absolute -top-6 -right-6 p-3 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-500 rotate-6 transform scale-150 pointer-events-none">
-                    <svg class="w-40 h-40 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18-.21 0-.41-.06-.57-.18l-7.9-4.44A.991.991 0 0 1 3 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44A.99.99 0 0 1 12 2c.21 0 .41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9zM12 4.15L6.04 7.5 12 10.85l5.96-3.35L12 4.15z"/></svg>
-                </div>
-                
-                <div class="flex items-center gap-4 mb-5 relative">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center border border-gray-700 group-hover:border-ogame-warning shadow-inner transition-colors group-hover:shadow-[0_0_15px_rgba(210,153,34,0.3)]">
-                        <svg class="w-8 h-8 text-gray-300 group-hover:text-ogame-warning transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold text-white group-hover:text-ogame-warning transition tracking-wide">Pack Calculator</h2>
-                        <span class="text-xs text-ogame-success font-medium uppercase tracking-wider">Attivo</span>
-                    </div>
-                </div>
-                
-                <p class="text-sm text-gray-400 mb-6 flex-grow leading-relaxed">
-                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
-                </p>
-                
-                <div class="flex items-center text-ogame-warning font-bold text-sm uppercase tracking-wider">
-                    Apri Tool <svg class="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </div>
-            </a>
-
-            <div class="hidden lg:block border border-dashed border-gray-800 rounded-xl p-6 flex flex-col items-center justify-center text-gray-800">
-                <span class="text-4xl opacity-20 mb-2">+</span>
-                <span class="text-sm font-bold opacity-20">Spazio per futuri tool</span>
-            </div>
-
-        </div>
-    </main>
-
-    <footer class="py-8 text-center border-t border-ogame-border bg-[#0d1014] z-10 relative">
-        <p class="text-sm text-gray-500">
-            Sviluppato per la community di OGame. 
-            <span class="block mt-2 opacity-50 text-xs">Questo tool non è affiliato con Gameforge.</span>
+        <h1 class="text-5xl md:text-7xl font-bold text-white mb-4 tracking-tight mt-8">
+            O<span class="text-ogame-accent" data-i18n="index_title_suffix">Value</span>
+        </h1>
+        <p class="text-gray-400 text-lg max-w-xl mx-auto" data-i18n="index_desc">
+            Massimizza il valore del tuo impero. Calcolatori avanzati per produzione, crawler e shop.
         </p>
-    </footer>
-<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-      kofiWidgetOverlay.draw('galax95', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support me',
-        'floating-chat.donateButton.background-color': '#3399ff', // Ho messo il BLU del tuo tema (era #323842)
-        'floating-chat.donateButton.text-color': '#fff'
-      });
-</script>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+        
+        <div class="bg-ogame-panel border border-ogame-border rounded-2xl p-8 hover:border-ogame-accent transition duration-300 shadow-2xl flex flex-col group relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-110">
+                <svg class="w-32 h-32 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2 z-10" data-i18n="card_metal_title">Production Core</h2>
+            <p class="text-gray-400 mb-6 flex-grow z-10" data-i18n="card_metal_desc">Calcolatore produzione miniere, gestione crawler e forme di vita.</p>
+            <a href="metal.html" class="inline-flex justify-center items-center px-6 py-3 bg-ogame-accent hover:bg-blue-600 text-white font-bold rounded-lg transition z-10">
+                <span data-i18n="btn_open">APRI TOOL</span> <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+
+        <div class="bg-ogame-panel border border-ogame-border rounded-2xl p-8 hover:border-ogame-warning transition duration-300 shadow-2xl flex flex-col group relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition transform group-hover:scale-110">
+                <svg class="w-32 h-32 text-ogame-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2 z-10" data-i18n="card_pack_title">Pack Exchange</h2>
+            <p class="text-gray-400 mb-6 flex-grow z-10" data-i18n="card_pack_desc">Analisi costi costruzioni e ottimizzazione acquisto pacchetti risorse.</p>
+            <a href="pack.html" class="inline-flex justify-center items-center px-6 py-3 bg-ogame-warning hover:bg-yellow-600 text-white font-bold rounded-lg transition z-10">
+                <span data-i18n="btn_open">APRI TOOL</span> <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+
+    </div>
+
+    <script src="js/lang.js"></script>
+    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+    <script>kofiWidgetOverlay.draw('galax95', {'type': 'floating-chat','floating-chat.donateButton.text': 'Support me','floating-chat.donateButton.background-color': '#3399ff','floating-chat.donateButton.text-color': '#fff'});</script>
 </body>
 </html>
