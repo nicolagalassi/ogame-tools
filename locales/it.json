@@ -14,6 +14,9 @@
     "card_pack_desc": "Analisi costi costruzioni e ottimizzazione acquisto pacchetti risorse (MSU).",
     "btn_open": "APRI TOOL",
 
+    "footer_quote": "\"Il diavolo fa le pentole ma non i coperchi… quindi ci ho pensato io.\"",
+    "footer_privacy": "Privacy & Dati: Questo sito non utilizza database server-side. Tutte le configurazioni sono salvate esclusivamente nel Local Storage del tuo browser.",
+
     "metal_calc_title": "Production Core",
     "metal_calc_desc": "Ottimizza la produzione per calcolare il valore dei pacchetti.",
     "settings_title": "Impostazioni Account",
