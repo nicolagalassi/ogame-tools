@@ -87,11 +87,13 @@
     "lbl_level": "Livello",
     "lbl_planets": "N° Pianeti",
     "lbl_quantity": "Quantità",
+    "lbl_min_level": "Liv. Centro Mineralogia",
     "btn_add_queue": "Aggiungi alla Lista",
     "cat_resources": "Risorse",
     "cat_facilities": "Strutture",
     "cat_research": "Ricerche",
     "cat_fleet": "Flotta / Difesa",
+    "cat_lf_rock": "LF Rock'tal",
     "queue_empty": "Lista vuota",
     "imported_data": "Importazione OGLight",
 
@@ -123,6 +125,7 @@
     "computer_technology": "Tecnologia Informatica",
     "astrophysics": "Astrofisica",
     "intergalactic_research_network": "Rete Intergalattica di Ricerca",
+    "graviton_technology": "Tecnologia Gravitonica",
     "weapons_technology": "Tecnologia delle Armi",
     "shielding_technology": "Tecnologia degli Scudi",
     "armour_technology": "Tecnologia delle Corazze",
@@ -148,5 +151,6 @@
     "heavy_laser": "Laser Pesante",
     "gauss_cannon": "Cannone Gauss",
     "ion_cannon": "Cannone Ionico",
-    "plasma_turret": "Torretta al Plasma"
+    "plasma_turret": "Torretta al Plasma",
+    "mineralogy_centre": "Centro di Mineralogia"
 }
