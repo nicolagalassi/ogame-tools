@@ -27,7 +27,7 @@
                     <span data-i18n="metal_calc_title">Production Core</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="metal_calc_desc">
-                    Ottimizza la produzione...
+                    Ottimizza la produzione per calcolare il valore dei pacchetti.
                 </p>
             </div>
             
@@ -351,15 +351,17 @@
                 if(globalData.staff) { bonuses.push({n:t('lbl_staff'), v:2}); totPerc+=2; }
                 if(globalData.playerClass==='collector') { bonuses.push({n:'Collector', v:25}); totPerc+=25; }
                 if(globalData.allyClass==='trader') { bonuses.push({n:'Trader', v:5}); totPerc+=5; }
-                if(item>0) { bonuses.push({n:t('lbl_item'), v:item}); totPerc+=item; }
-                if(itemCust>0) { bonuses.push({n:'Custom', v:itemCust}); totPerc+=itemCust; }
+                
+                // UNIONE ITEM + CUSTOM
+                let combinedItem = item + itemCust;
+                if(combinedItem > 0) { bonuses.push({n:t('lbl_item'), v:combinedItem}); totPerc+=combinedItem; }
+
                 if(magma>0) { bonuses.push({n:`Magma (${magma})`, v:magma*2}); totPerc+=magma*2; }
                 if(human>0) { bonuses.push({n:`Human (${human})`, v:human*1.5}); totPerc+=human*1.5; }
                 if(globalData.lfGlobalBonus>0) { bonuses.push({n:'Tech LF', v:globalData.lfGlobalBonus}); totPerc+=globalData.lfGlobalBonus; }
 
                 const mineSum = met+cry+deu;
                 let maxCraw = mineSum*8;
-                // CAP Crawler: +10% se Collector + Geologist
                 if(globalData.playerClass==='collector' && globalData.geologist) maxCraw = Math.floor(maxCraw*1.1);
                 
                 card.querySelector('.p-max-crawlers-disp').innerText = maxCraw;
@@ -369,12 +371,8 @@
                 else if(craw>0) fb.innerText=""; else fb.innerText=t('msg_crawler_none');
 
                 if(actCraw>0) {
-                    // LOGICA CRAWLER FACTOR: 0.02 base
                     let uB = 0.02;
-                    if(globalData.playerClass==='collector') { 
-                        uB*=1.5; // +50% Classe
-                        if(over) uB*=1.5; // +50% Overload (SOLO SE COLLECTOR)
-                    }
+                    if(globalData.playerClass==='collector') { uB*=1.5; if(over) uB*=1.5; }
                     let cP = actCraw*uB;
                     bonuses.push({n:`Crawler (${actCraw})`, v:cP}); totPerc+=cP;
                 }
