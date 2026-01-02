@@ -1,40 +1,46 @@
 const defaultLang = 'it';
-const availableLangs = ['it', 'en']; // Aggiungi qui le lingue future (es. 'es', 'de')
+const availableLangs = ['it', 'en'];
+
+// Variabile globale per le traduzioni
+window.translations = {}; 
 
 async function setLanguage(lang) {
     if (!availableLangs.includes(lang)) lang = defaultLang;
 
-    // Carica il file JSON
     try {
         const response = await fetch(`locales/${lang}.json`);
-        const translations = await response.json();
+        window.translations = await response.json();
         
-        // Applica le traduzioni
+        // 1. Aggiorna testi statici HTML
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (translations[key]) {
-                // Se è un input, cambia il placeholder, altrimenti il testo
+            if (window.translations[key]) {
                 if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                    el.placeholder = translations[key];
+                    el.placeholder = window.translations[key];
                 } else {
-                    el.innerHTML = translations[key];
+                    el.innerHTML = window.translations[key];
                 }
             }
         });
 
-        // Salva preferenza e aggiorna selettore
+        // 2. Salva e aggiorna UI
         localStorage.setItem('ogame_lang', lang);
-        document.getElementById('langSelector').value = lang;
+        const selector = document.getElementById('langSelector');
+        if(selector) selector.value = lang;
         
-        // Evento custom nel caso serva ricalcolare cose grafiche
-        document.dispatchEvent(new Event('langChanged'));
+        // 3. Lancia un evento per dire alle altre funzioni "Ridisegnatevi!"
+        document.dispatchEvent(new Event('langLoaded'));
 
     } catch (e) {
-        console.error("Errore caricamento lingua:", e);
+        console.error("Errore lingua:", e);
     }
 }
 
-// Avvio automatico
+// Helper per ottenere testo in JS
+window.t = function(key) {
+    return window.translations[key] || key; // Ritorna la chiave se manca la traduzione
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('ogame_lang') || navigator.language.slice(0, 2);
     setLanguage(savedLang);
