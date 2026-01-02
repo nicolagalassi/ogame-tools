@@ -24,7 +24,7 @@
                     <span data-i18n="pack_calc_title">Pack Exchange</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="pack_calc_desc">
-                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura.
+                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
                 </p>
             </div>
             
@@ -69,6 +69,7 @@
                                 <option value="facilities" data-i18n="cat_facilities">Strutture</option>
                                 <option value="research" data-i18n="cat_research">Ricerche</option>
                                 <option value="fleet" data-i18n="cat_fleet">Flotta/Difesa</option>
+                                <option value="lf_rock" data-i18n="cat_lf_rock">LF Rock'tal</option>
                             </select>
                         </div>
                         <div class="md:col-span-1">
@@ -87,6 +88,11 @@
                                 <input type="number" id="builderMult" value="1" min="1" class="w-full bg-[#0d1014] border border-gray-700 rounded pl-6 pr-2 py-2 text-white text-sm focus:border-green-500 outline-none font-mono">
                             </div>
                         </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-[10px] uppercase font-bold text-ogame-warning mb-1" data-i18n="lbl_min_level">Liv. Centro Mineralogia</label>
+                        <input type="number" id="mineralogyLevel" placeholder="0" min="0" value="0" class="w-24 bg-[#0d1014] border border-ogame-warning/50 rounded px-2 py-1 text-white text-xs focus:border-ogame-warning outline-none font-mono">
                     </div>
                     
                     <button onclick="addToQueue()" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-sm transition shadow-md mb-4" data-i18n="btn_add_queue">
@@ -187,7 +193,7 @@
                     <div class="flex flex-col gap-3 mb-4">
                         <div class="flex justify-between items-center">
                             <h3 class="text-sm font-bold text-gray-300 uppercase flex items-center gap-2">
-                                <svg class="w-4 h-4 text-ogame-dm" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6V7z"/><path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1v-2H2a1 1 0 110-2h1V7a2 2 0 012-2h2V2zM5 7v6h10V7H5z" clip-rule="evenodd"/></svg>
+                                <svg class="w-4 h-4 text-ogame-dm" fill="currentColor" viewBox="0 0 20 20"><path d="M13 7H7v6h6V7z"/><path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1v-2H2a1 1 0 110-2h1V7a2 2 0 012-2h2V2zM5 7v6h10V7H5z" clip-rule="evenodd"/></svg>
                                 <span data-i18n="lbl_cost_dm">Costo MO</span>
                             </h3>
                             <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
@@ -241,7 +247,6 @@
     <script>
         const basePacks = [{ cost: 200, amount: 5100000 }, { cost: 100, amount: 2525000 }, { cost: 50, amount: 1140000 }, { cost: 25, amount: 480000 }, { cost: 10, amount: 150000 }, { cost: 5, amount: 60000 }];
         
-        // Array che contiene la coda degli oggetti
         let queueItems = [];
 
         document.addEventListener('langLoaded', () => {
@@ -300,6 +305,9 @@
             const level = parseInt(document.getElementById('builderLevel').value) || 1;
             let multiplier = parseInt(document.getElementById('builderMult').value) || 1;
             
+            // Level Mineralogia (0-100)
+            const minLevel = parseInt(document.getElementById('mineralogyLevel').value) || 0;
+            
             // Force mult=1 per Ricerche
             if (cat === 'research') multiplier = 1;
 
@@ -314,9 +322,24 @@
             } else {
                 // Strutture/Ricerche
                 const factor = Math.pow(itemData.f, level - 1);
-                costM = Math.floor(itemData.b[0] * factor) * multiplier;
-                costC = Math.floor(itemData.b[1] * factor) * multiplier;
-                costD = Math.floor(itemData.b[2] * factor) * multiplier;
+                costM = Math.floor(itemData.b[0] * factor);
+                costC = Math.floor(itemData.b[1] * factor);
+                costD = Math.floor(itemData.b[2] * factor);
+
+                // SCONTO MINERALOGIA (Solo per Miniere Met/Cri/Deu)
+                if (['metal_mine', 'crystal_mine', 'deuterium_synthesizer'].includes(itemKey)) {
+                    let discount = Math.min(0.5, minLevel * 0.005); // 0.5% per livello, max 50%
+                    if (discount > 0) {
+                        costM = Math.floor(costM * (1 - discount));
+                        costC = Math.floor(costC * (1 - discount));
+                        costD = Math.floor(costD * (1 - discount));
+                    }
+                }
+
+                // Applica Moltiplicatore Pianeti
+                costM *= multiplier;
+                costC *= multiplier;
+                costD *= multiplier;
             }
 
             // Aggiungi all'array
