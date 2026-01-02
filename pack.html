@@ -24,7 +24,7 @@
                     <span data-i18n="pack_calc_title">Pack Exchange</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="pack_calc_desc">
-                    Converti costi in MSU e ottimizza l'acquisto di Materia Oscura.
+                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura.
                 </p>
             </div>
             
@@ -69,8 +69,6 @@
                                 <option value="facilities" data-i18n="cat_facilities">Strutture</option>
                                 <option value="research" data-i18n="cat_research">Ricerche</option>
                                 <option value="fleet" data-i18n="cat_fleet">Flotta/Difesa</option>
-                                <option value="lf_rock" data-i18n="cat_lf_rock">LF Rock'tal</option>
-                                <option value="lf_human" data-i18n="cat_lf_human">LF Umani</option>
                             </select>
                         </div>
                         <div class="md:col-span-1">
@@ -130,15 +128,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_metal">Metallo</label>
-                            <input type="text" id="costMetal" placeholder="0" readonly class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-ogame-accent outline-none font-mono text-lg cursor-not-allowed opacity-70">
+                            <input type="text" id="costMetal" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-ogame-accent outline-none font-mono text-lg cursor-not-allowed opacity-70">
                         </div>
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_crystal">Cristallo</label>
-                            <input type="text" id="costCrystal" placeholder="0" readonly class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-green-500 outline-none font-mono text-lg cursor-not-allowed opacity-70">
+                            <input type="text" id="costCrystal" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-green-500 outline-none font-mono text-lg cursor-not-allowed opacity-70">
                         </div>
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_deuterium">Deuterio</label>
-                            <input type="text" id="costDeut" placeholder="0" readonly class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none font-mono text-lg cursor-not-allowed opacity-70">
+                            <input type="text" id="costDeut" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg p-3 text-white focus:border-blue-500 outline-none font-mono text-lg cursor-not-allowed opacity-70">
                         </div>
                     </div>
                 </div>
@@ -287,7 +285,7 @@
                 lblLevel.innerText = t('lbl_level');
                 document.getElementById('builderMult').value = 1;
             } else {
-                // Strutture/LF: Si Livello, Si Moltiplicatore (Pianeti)
+                // Strutture: Si Livello, Si Moltiplicatore (Pianeti)
                 levelCont.classList.remove('hidden');
                 multCont.classList.remove('hidden');
                 lblLevel.innerText = t('lbl_level');
@@ -352,6 +350,7 @@
                     let infoText = "";
                     if(item.cat === 'fleet') infoText = `(${t('lbl_quantity')}: ${item.mult})`;
                     else if(item.cat === 'research') infoText = `(Lvl: ${item.level})`;
+                    else if(item.cat === 'import') infoText = "";
                     else infoText = `(Lvl: ${item.level} - ${item.mult}x)`;
 
                     row.innerHTML = `
