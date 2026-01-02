@@ -1,6 +1,4 @@
 // OGAME DATABASE - Solo Costi e Formule
-// I nomi sono gestiti dai file di lingua (locales/it.json, etc) usando le chiavi qui sotto.
-
 const OGAME_DB = {
     resources: {
         label: "cat_resources",
@@ -46,6 +44,12 @@ const OGAME_DB = {
             weapons_technology: { b: [800,200,0], f: 2.0 },
             shielding_technology: { b: [200,600,0], f: 2.0 },
             armour_technology: { b: [1000,0,0], f: 2.0 }
+        }
+    },
+    lf_rock: {
+        label: "cat_lf_rock",
+        items: {
+            mineralogy_centre: { b: [20000, 40000, 20000], f: 1.5 } // Costi stimati T3 Rocktal
         }
     },
     fleet: {
