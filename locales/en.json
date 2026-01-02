@@ -87,11 +87,13 @@
     "lbl_level": "Level",
     "lbl_planets": "N° Planets",
     "lbl_quantity": "Quantity",
+    "lbl_min_level": "Mineralogy Centre Lvl",
     "btn_add_queue": "Add to List",
     "cat_resources": "Resource Buildings",
     "cat_facilities": "Facilities",
     "cat_research": "Research",
     "cat_fleet": "Fleet / Defense",
+    "cat_lf_rock": "LF Rock'tal",
     "queue_empty": "List is empty",
     "imported_data": "OGLight Import",
 
@@ -123,6 +125,7 @@
     "computer_technology": "Computer Technology",
     "astrophysics": "Astrophysics",
     "intergalactic_research_network": "Intergalactic Research Network",
+    "graviton_technology": "Graviton Technology",
     "weapons_technology": "Weapons Technology",
     "shielding_technology": "Shielding Technology",
     "armour_technology": "Armour Technology",
@@ -148,5 +151,6 @@
     "heavy_laser": "Heavy Laser",
     "gauss_cannon": "Gauss Cannon",
     "ion_cannon": "Ion Cannon",
-    "plasma_turret": "Plasma Turret"
+    "plasma_turret": "Plasma Turret",
+    "mineralogy_centre": "Mineralogy Centre"
 }
