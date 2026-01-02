@@ -43,7 +43,6 @@ const OGAME_DB = {
             computer_technology: { b: [0,400,600], f: 2.0 },
             astrophysics: { b: [4000,8000,4000], f: 1.75 },
             intergalactic_research_network: { b: [240000,400000,160000], f: 2.0 },
-            graviton_technology: { b: [0,0,0,300000], f: 3.0 },
             weapons_technology: { b: [800,200,0], f: 2.0 },
             shielding_technology: { b: [200,600,0], f: 2.0 },
             armour_technology: { b: [1000,0,0], f: 2.0 }
