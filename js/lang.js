@@ -1,7 +1,6 @@
 const defaultLang = 'it';
 const availableLangs = ['it', 'en'];
 
-// Variabile globale per le traduzioni
 window.translations = {}; 
 
 async function setLanguage(lang) {
@@ -23,22 +22,25 @@ async function setLanguage(lang) {
             }
         });
 
-        // 2. Salva e aggiorna UI
+        // 2. Aggiorna stato Select e Etichetta Visibile
         localStorage.setItem('ogame_lang', lang);
-        const selector = document.getElementById('langSelector');
-        if(selector) selector.value = lang;
         
-        // 3. Lancia un evento per dire alle altre funzioni "Ridisegnatevi!"
+        const selector = document.getElementById('langSelector');
+        const label = document.getElementById('langLabel');
+        
+        if(selector) selector.value = lang;
+        if(label) label.innerText = lang.toUpperCase();
+        
+        // 3. Lancia evento
         document.dispatchEvent(new Event('langLoaded'));
 
     } catch (e) {
-        console.error("Errore lingua:", e);
+        console.error("Errore caricamento lingua:", e);
     }
 }
 
-// Helper per ottenere testo in JS
 window.t = function(key) {
-    return window.translations[key] || key; // Ritorna la chiave se manca la traduzione
+    return window.translations[key] || key;
 };
 
 document.addEventListener('DOMContentLoaded', () => {
