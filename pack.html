@@ -24,7 +24,7 @@
                     <span data-i18n="pack_calc_title">Pack Exchange</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="pack_calc_desc">
-                    Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
+                    Converti costi in MSU e ottimizza l'acquisto di Materia Oscura.
                 </p>
             </div>
             
@@ -55,6 +55,50 @@
             <div class="lg:col-span-2 space-y-8">
                 
                 <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-1 h-full bg-green-600"></div>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        <span data-i18n="builder_title">Costruttore / Pianificatore</span>
+                    </h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-4">
+                        <div class="md:col-span-1">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_category">Categoria</label>
+                            <select id="builderCat" onchange="updateBuilderItems()" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none">
+                                <option value="resources" data-i18n="cat_resources">Risorse</option>
+                                <option value="facilities" data-i18n="cat_facilities">Strutture</option>
+                                <option value="research" data-i18n="cat_research">Ricerche</option>
+                                <option value="fleet" data-i18n="cat_fleet">Flotta/Difesa</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_element">Elemento</label>
+                            <select id="builderItem" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none">
+                                </select>
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_level_amount">Liv./Qta</label>
+                            <input type="number" id="builderLevel" placeholder="1" min="1" class="w-full bg-[#0d1014] border border-gray-700 rounded px-2 py-2 text-white text-sm focus:border-green-500 outline-none font-mono">
+                        </div>
+                        <div class="md:col-span-1 relative">
+                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" data-i18n="lbl_multiplier">Moltiplicatore</label>
+                            <div class="flex items-center">
+                                <span class="absolute left-3 text-gray-500 text-sm font-bold">x</span>
+                                <input type="number" id="builderMult" value="1" min="1" class="w-full bg-[#0d1014] border border-gray-700 rounded pl-6 pr-2 py-2 text-white text-sm focus:border-green-500 outline-none font-mono">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="addToQueue()" class="w-full bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded text-sm transition shadow-md mb-4" data-i18n="btn_add_queue">
+                        Aggiungi alla Lista
+                    </button>
+
+                    <div id="builderQueue" class="bg-[#0d1014]/50 border border-gray-700 rounded-lg p-3 min-h-[50px] max-h-[150px] overflow-y-auto space-y-1 text-xs font-mono">
+                        <div class="text-center text-gray-600 italic" data-i18n="queue_empty">Lista vuota</div>
+                    </div>
+                </div>
+
+                <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative overflow-hidden group">
                     <div class="absolute top-0 left-0 w-1 h-full bg-ogame-accent"></div>
                     <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
                         <svg class="w-5 h-5 text-ogame-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
@@ -79,7 +123,7 @@
                 </div>
 
                 <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl relative">
-                    <h3 class="text-lg font-bold text-white mb-6" data-i18n="lbl_costs">Costi Risorse</h3>
+                    <h3 class="text-lg font-bold text-white mb-6" data-i18n="lbl_costs">Costi Risorse Totali</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div class="relative group">
@@ -201,12 +245,85 @@
     </div>
 
     <script src="js/lang.js"></script>
+    <script src="js/ogame_db.js"></script>
 
     <script>
         const basePacks = [{ cost: 200, amount: 5100000 }, { cost: 100, amount: 2525000 }, { cost: 50, amount: 1140000 }, { cost: 25, amount: 480000 }, { cost: 10, amount: 150000 }, { cost: 5, amount: 60000 }];
+        
+        let queueTotalMet = 0;
+        let queueTotalCry = 0;
+        let queueTotalDeut = 0;
 
-        document.addEventListener('langLoaded', () => calculate());
+        document.addEventListener('langLoaded', () => {
+            calculate();
+            updateBuilderItems();
+        });
 
+        // --- BUILDER LOGIC ---
+        function updateBuilderItems() {
+            const cat = document.getElementById('builderCat').value;
+            const itemSelect = document.getElementById('builderItem');
+            itemSelect.innerHTML = "";
+            
+            const items = OGAME_DB[cat].items;
+            for (const key in items) {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.innerText = t(key); // USA t(key) per prendere il nome dal file di lingua
+                itemSelect.appendChild(opt);
+            }
+        }
+
+        function addToQueue() {
+            const cat = document.getElementById('builderCat').value;
+            const itemKey = document.getElementById('builderItem').value;
+            const level = parseInt(document.getElementById('builderLevel').value) || 1;
+            const multiplier = parseInt(document.getElementById('builderMult').value) || 1;
+            
+            const itemData = OGAME_DB[cat].items[itemKey];
+            let costM=0, costC=0, costD=0;
+
+            if (itemData.type === 'unit') {
+                costM = itemData.b[0] * level;
+                costC = itemData.b[1] * level;
+                costD = itemData.b[2] * level;
+            } else {
+                const factor = Math.pow(itemData.f, level - 1);
+                costM = Math.floor(itemData.b[0] * factor);
+                costC = Math.floor(itemData.b[1] * factor);
+                costD = Math.floor(itemData.b[2] * factor);
+            }
+
+            costM *= multiplier; costC *= multiplier; costD *= multiplier;
+            queueTotalMet += costM; queueTotalCry += costC; queueTotalDeut += costD;
+
+            const queueDiv = document.getElementById('builderQueue');
+            if(queueDiv.innerHTML.includes("Lista vuota") || queueDiv.innerHTML.includes("List is empty")) queueDiv.innerHTML = "";
+
+            const itemName = t(itemKey); // Traduzione nome in lista
+            const row = document.createElement('div');
+            row.className = "flex justify-between items-center text-gray-300 border-b border-gray-700/50 pb-1 last:border-0";
+            row.innerHTML = `<div><span class="font-bold text-white">${multiplier}x</span> ${itemName} <span class="text-xs text-gray-500">(Lvl/Qta: ${level})</span></div><div class="text-xs text-gray-400">M: ${formatShort(costM)} C: ${formatShort(costC)} D: ${formatShort(costD)}</div>`;
+            queueDiv.appendChild(row);
+
+            updateMainInputs();
+        }
+
+        function updateMainInputs() {
+            document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(queueTotalMet);
+            document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(queueTotalCry);
+            document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(queueTotalDeut);
+            calculate();
+        }
+
+        function formatShort(num) {
+            if(num >= 1000000000) return (num/1000000000).toFixed(1) + 'G';
+            if(num >= 1000000) return (num/1000000).toFixed(1) + 'M';
+            if(num >= 1000) return (num/1000).toFixed(1) + 'K';
+            return num;
+        }
+
+        // --- CALCOLO & PARSING (Standard) ---
         function formatInput(input) {
             let value = input.value.replace(/\D/g, '');
             if (value === '') { input.value = ''; return; }
@@ -214,7 +331,14 @@
         }
         function getRawValue(id) { const val = document.getElementById(id).value.replace(/\./g, ''); return val === '' ? 0 : parseInt(val); }
         function setRate(m, c, d) { document.getElementById('rateCry').value = c; document.getElementById('rateDeut').value = d; calculate(); }
-        function resetFields() { document.getElementById('costMetal').value = ''; document.getElementById('costCrystal').value = ''; document.getElementById('costDeut').value = ''; document.getElementById('pasteArea').value = ''; document.getElementById('shopDiscount').value = "0"; document.getElementById('moBonus').value = "0"; document.getElementById('parseMultiplier').value = "1"; calculate(); }
+        
+        function resetFields() { 
+            document.getElementById('costMetal').value = ''; document.getElementById('costCrystal').value = ''; document.getElementById('costDeut').value = ''; document.getElementById('pasteArea').value = ''; 
+            document.getElementById('shopDiscount').value = "0"; document.getElementById('moBonus').value = "0"; document.getElementById('parseMultiplier').value = "1"; 
+            queueTotalMet=0; queueTotalCry=0; queueTotalDeut=0;
+            document.getElementById('builderQueue').innerHTML = `<div class="text-center text-gray-600 italic">${t('queue_empty')}</div>`;
+            calculate(); 
+        }
 
         function parseString() {
             const text = document.getElementById('pasteArea').value;
@@ -226,12 +350,9 @@
             while ((match = regexCry.exec(text)) !== null) totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
             while ((match = regexDeut.exec(text)) !== null) totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
             totalMet *= multiplier; totalCry *= multiplier; totalDeut *= multiplier;
-            if (totalMet > 0 || totalCry > 0 || totalDeut > 0) {
-                document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalMet);
-                document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalCry);
-                document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalDeut);
-            } else if (text.trim().length > 0) alert("Nessuna risorsa trovata.");
-            calculate();
+            
+            queueTotalMet += totalMet; queueTotalCry += totalCry; queueTotalDeut += totalDeut;
+            updateMainInputs();
         }
 
         function calculate() {
@@ -270,14 +391,11 @@
             let currentPack = packs[0];
             let countA = Math.ceil(target / currentPack.amount);
             let costA = countA * currentPack.cost;
-            
             if (packs.length === 1) return { totalCost: costA, packList: [{ count: countA, pack: currentPack }] };
-
             let countB = Math.floor(target / currentPack.amount);
             let remainder = target - (countB * currentPack.amount);
             let subResult = findBestCombination(remainder, packs.slice(1));
             let costB = (countB * currentPack.cost) + subResult.totalCost;
-
             if (costA <= costB) return { totalCost: costA, packList: [{ count: countA, pack: currentPack }] };
             else {
                 let listB = subResult.packList;
@@ -294,7 +412,6 @@
                 if(found) found.count += item.count; else displayList.push({ count: item.count, pack: item.pack });
             });
             displayList.sort((a,b) => b.pack.cost - a.pack.cost);
-
             let html = '';
             displayList.forEach(item => {
                  html += `
