@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pack Calculator | OGame Hub</title>
+    <title>Pack Exchange | OValue</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,10 +18,10 @@
             <div class="text-center md:text-left">
                 <a href="index.html" class="inline-flex items-center text-sm text-gray-500 hover:text-ogame-accent transition mb-2 group">
                     <svg class="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                    <span data-i18n="nav_back">Torna all'Hub</span>
+                    <span data-i18n="nav_back">Torna a OValue</span>
                 </a>
                 <h1 class="text-3xl md:text-5xl font-bold text-white tracking-tight">
-                    <span data-i18n="pack_calc_title">Pack Calculator</span>
+                    <span data-i18n="pack_calc_title">Pack Exchange</span>
                 </h1>
                 <p class="text-gray-400 mt-2 max-w-xl text-sm md:text-base" data-i18n="pack_calc_desc">
                     Converti costi in MSE, calcola pacchetti necessari e ottimizza l'acquisto di Materia Oscura in Euro.
@@ -36,11 +36,12 @@
 
                 <div class="w-px bg-gray-700 my-2"></div>
 
-                <div class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group relative" title="Lingua/Language">
-                    <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
-                    <select id="langSelector" onchange="setLanguage(this.value)" class="appearance-none bg-transparent border-none text-[9px] uppercase font-bold text-center focus:ring-0 cursor-pointer w-full text-current hover:text-white outline-none py-0">
-                        <option value="it" class="bg-[#161b22] text-gray-300">IT</option>
-                        <option value="en" class="bg-[#161b22] text-gray-300">EN</option>
+                <div class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group relative cursor-pointer" title="Lingua/Language">
+                    <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                    <span id="langLabel" class="text-[9px] font-bold uppercase pointer-events-none">IT</span>
+                    <select id="langSelector" onchange="setLanguage(this.value)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <option value="it">Italiano</option>
+                        <option value="en">English</option>
                     </select>
                 </div>
             </div>
@@ -166,7 +167,7 @@
                         <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
                              <span class="text-[10px] text-gray-400 uppercase font-bold" data-i18n="lbl_event_bonus">Evento Bonus MO:</span>
                              <select id="moBonus" onchange="calculate()" class="bg-[#0d1014] text-xs text-white outline-none text-right font-bold cursor-pointer border-none focus:ring-0 w-24">
-                                 <option value="0">0%</option>
+                                 <option value="0">Nessuno</option>
                                  <option value="30">+30% MO</option>
                                  <option value="40">+40% MO</option>
                                  <option value="50">+50% MO</option>
@@ -267,14 +268,11 @@
         function findBestCombination(target, packs) {
             if (target <= 0) return { totalCost: 0, packList: [] };
             let currentPack = packs[0];
-            
-            // Ceiling (Buy current pack enough to cover everything)
             let countA = Math.ceil(target / currentPack.amount);
             let costA = countA * currentPack.cost;
             
             if (packs.length === 1) return { totalCost: costA, packList: [{ count: countA, pack: currentPack }] };
 
-            // Floor (Buy max full current packs + optimize remainder with smaller packs)
             let countB = Math.floor(target / currentPack.amount);
             let remainder = target - (countB * currentPack.amount);
             let subResult = findBestCombination(remainder, packs.slice(1));
