@@ -6,50 +6,16 @@
     <title>Pack Calculator | OGame Hub</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        ogame: {
-                            bg: '#0d1014',       
-                            panel: '#161b22',    
-                            border: '#30363d',   
-                            accent: '#3399ff',   
-                            success: '#238636',  
-                            danger: '#da3633',   
-                            warning: '#d29922', 
-                            dm: '#7834bc', 
-                            money: '#2ea043', 
-                            text: '#c9d1d9'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                        mono: ['Consolas', 'Monaco', 'monospace'],
-                    }
-                }
-            }
-        }
+        tailwind.config = { theme: { extend: { colors: { ogame: { bg: '#0d1014', panel: '#161b22', border: '#30363d', accent: '#3399ff', success: '#238636', danger: '#da3633', warning: '#d29922', dm: '#7834bc', money: '#2ea043', text: '#c9d1d9' } }, fontFamily: { sans: ['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'], mono: ['Consolas', 'Monaco', 'monospace'] } } } }
     </script>
-    <style>
-        input[type=number]::-webkit-inner-spin-button { opacity: 0; }
-        input[type=number]:hover::-webkit-inner-spin-button { opacity: 1; }
-    </style>
+    <style>input[type=number]::-webkit-inner-spin-button{opacity:0}input[type=number]:hover::-webkit-inner-spin-button{opacity:1}</style>
 </head>
 <body class="bg-ogame-bg text-ogame-text font-sans pb-32 min-h-screen">
 
     <header class="relative bg-gradient-to-b from-[#1c2128] to-ogame-bg border-b border-ogame-border pt-8 pb-12 px-4 mb-6">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
-                <div class="mb-2">
-                    <select id="langSelector" onchange="setLanguage(this.value)" class="bg-[#0d1014] border border-gray-700 text-xs text-gray-400 rounded px-2 py-1 focus:outline-none">
-                        <option value="it">🇮🇹 Italiano</option>
-                        <option value="en">🇬🇧 English</option>
-                    </select>
-                </div>
-
                 <a href="index.html" class="inline-flex items-center text-sm text-gray-500 hover:text-ogame-accent transition mb-2 group">
                     <svg class="w-4 h-4 mr-1 transform group-hover:-translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     <span data-i18n="nav_back">Torna all'Hub</span>
@@ -67,6 +33,16 @@
                     <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     <span class="text-[9px] uppercase font-bold" data-i18n="btn_reset">Reset</span>
                 </button>
+
+                <div class="w-px bg-gray-700 my-2"></div>
+
+                <div class="flex flex-col items-center justify-center w-16 h-14 rounded-lg hover:bg-gray-800 transition text-gray-400 hover:text-white group relative" title="Lingua/Language">
+                    <svg class="w-5 h-5 mb-1 group-hover:scale-110 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                    <select id="langSelector" onchange="setLanguage(this.value)" class="appearance-none bg-transparent border-none text-[9px] uppercase font-bold text-center focus:ring-0 cursor-pointer w-full text-current hover:text-white outline-none py-0">
+                        <option value="it" class="bg-[#161b22] text-gray-300">IT</option>
+                        <option value="en" class="bg-[#161b22] text-gray-300">EN</option>
+                    </select>
+                </div>
             </div>
         </div>
     </header>
@@ -108,33 +84,22 @@
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_metal">Metallo</label>
                             <div class="relative">
-                                <input type="text" id="costMetal" placeholder="0" oninput="formatInput(this); calculate()" 
-                                    class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-ogame-accent outline-none transition font-mono text-lg">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                                </div>
+                                <input type="text" id="costMetal" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-ogame-accent outline-none font-mono text-lg">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div>
                             </div>
                         </div>
-
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_crystal">Cristallo</label>
                             <div class="relative">
-                                <input type="text" id="costCrystal" placeholder="0" oninput="formatInput(this); calculate()" 
-                                    class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 outline-none transition font-mono text-lg">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                </div>
+                                <input type="text" id="costCrystal" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-green-500 outline-none font-mono text-lg">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                             </div>
                         </div>
-
                         <div class="relative group">
                             <label class="block text-xs uppercase font-bold text-gray-500 mb-2" data-i18n="res_deuterium">Deuterio</label>
                             <div class="relative">
-                                <input type="text" id="costDeut" placeholder="0" oninput="formatInput(this); calculate()" 
-                                    class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-blue-500 outline-none transition font-mono text-lg">
-                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                                </div>
+                                <input type="text" id="costDeut" placeholder="0" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded-lg pl-10 pr-4 py-3 text-white focus:border-blue-500 outline-none font-mono text-lg">
+                                <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg></div>
                             </div>
                         </div>
                     </div>
@@ -147,20 +112,18 @@
                             <button onclick="setRate(3,2,1)" class="text-[10px] bg-gray-800 hover:bg-gray-700 px-2 py-1 rounded border border-gray-600 text-gray-300">Default 3:2:1</button>
                         </div>
                         <div class="flex items-center gap-2">
-                            <input type="number" id="rateMet" value="3" readonly class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-center text-gray-500 font-bold focus:outline-none cursor-not-allowed" title="Fisso a 3">
+                            <input type="number" id="rateMet" value="3" readonly class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-center text-gray-500 font-bold focus:outline-none cursor-not-allowed">
                             <span class="text-gray-500">:</span>
                             <input type="number" id="rateCry" value="2" onchange="calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded p-2 text-center text-green-400 font-bold focus:border-green-500 outline-none">
                             <span class="text-gray-500">:</span>
                             <input type="number" id="rateDeut" value="1" onchange="calculate()" class="w-full bg-[#0d1014] border border-gray-700 rounded p-2 text-center text-blue-400 font-bold focus:border-blue-500 outline-none">
                         </div>
-                        <p class="text-[10px] text-gray-500 mt-2 text-center">Converti tutto in Metallo. Metallo fisso a 3.</p>
                     </div>
 
                     <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl">
                         <h3 class="text-sm font-bold text-gray-400 uppercase mb-4" data-i18n="lbl_pack_val">Valore Pacchetto (Metallo)</h3>
                         <div class="relative">
-                            <input type="text" id="packValue" value="300.000.000" oninput="formatInput(this); calculate()" 
-                                class="w-full bg-[#0d1014] border border-ogame-warning/50 rounded-lg p-3 text-ogame-warning font-bold focus:border-ogame-warning outline-none text-center text-lg shadow-[0_0_10px_rgba(210,153,34,0.1)]">
+                            <input type="text" id="packValue" value="300.000.000" oninput="formatInput(this); calculate()" class="w-full bg-[#0d1014] border border-ogame-warning/50 rounded-lg p-3 text-ogame-warning font-bold focus:border-ogame-warning outline-none text-center text-lg shadow-[0_0_10px_rgba(210,153,34,0.1)]">
                             <div class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-mono">MET</div>
                         </div>
                         <p class="text-[10px] text-gray-500 mt-2 text-center" id="packSourceLabel" data-i18n="pack_source_manual">Inserisci manuale.</p>
@@ -172,14 +135,11 @@
                 
                 <div class="bg-ogame-panel border border-ogame-border rounded-xl p-6 shadow-xl sticky top-6 flex flex-col justify-center min-h-[220px]">
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-warning"></div>
-                    
                     <div class="text-center mb-6">
                         <div class="text-xs text-gray-500 uppercase tracking-widest mb-2" data-i18n="lbl_cost_mse">Costo Totale (MSE)</div>
                         <div id="totalMSE" class="text-3xl font-mono font-bold text-white break-all">0</div>
                     </div>
-
                     <div class="border-t border-gray-700/50 my-6"></div>
-
                     <div class="text-center">
                         <div class="text-sm text-ogame-warning uppercase tracking-widest mb-2 font-bold" data-i18n="lbl_packs_needed">Pacchetti Necessari</div>
                         <div id="packsNeeded" class="text-6xl font-bold text-white drop-shadow-[0_0_15px_rgba(210,153,34,0.5)]">0</div>
@@ -188,7 +148,6 @@
 
                 <div class="bg-ogame-panel border border-ogame-dm/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-dm"></div>
-                    
                     <div class="flex flex-col gap-3 mb-4">
                         <div class="flex justify-between items-center">
                             <h3 class="text-sm font-bold text-gray-300 uppercase flex items-center gap-2">
@@ -204,11 +163,10 @@
                                  </select>
                             </div>
                         </div>
-                        
                         <div class="flex items-center justify-between bg-[#0d1014] p-2 rounded border border-gray-700">
                              <span class="text-[10px] text-gray-400 uppercase font-bold" data-i18n="lbl_event_bonus">Evento Bonus MO:</span>
                              <select id="moBonus" onchange="calculate()" class="bg-[#0d1014] text-xs text-white outline-none text-right font-bold cursor-pointer border-none focus:ring-0 w-24">
-                                 <option value="0">Nessuno</option>
+                                 <option value="0">0%</option>
                                  <option value="30">+30% MO</option>
                                  <option value="40">+40% MO</option>
                                  <option value="50">+50% MO</option>
@@ -218,7 +176,6 @@
                              </select>
                         </div>
                     </div>
-
                     <div class="text-center">
                         <div class="text-[10px] text-gray-500 uppercase tracking-widest" data-i18n="lbl_cost_dm">Totale MO Necessaria</div>
                         <div id="moTotal" class="text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(120,52,188,0.5)] mb-1">0</div>
@@ -228,129 +185,67 @@
 
                 <div class="bg-ogame-panel border border-ogame-money/50 rounded-xl p-6 shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-1 h-full bg-ogame-money"></div>
-                    
                     <h3 class="text-sm font-bold text-gray-300 uppercase mb-4 flex items-center gap-2">
                         <span class="text-ogame-money text-lg">€</span> <span data-i18n="lbl_opt_cost">Stima Costo Ottimizzato</span>
                     </h3>
-
-                    <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]">
-                    </div>
-
+                    <div id="euroList" class="space-y-2 text-xs text-gray-400 font-mono mb-4 min-h-[40px]"></div>
                     <div class="border-t border-gray-700/50 my-3"></div>
-                    
                     <div class="flex justify-between items-end">
                          <span class="text-xs text-gray-500 uppercase font-bold" data-i18n="lbl_total">Totale</span>
                          <span id="euroTotal" class="text-2xl font-bold text-ogame-money">0 €</span>
                     </div>
                 </div>
-
             </div>
-
         </div>
     </div>
 
     <script src="js/lang.js"></script>
 
     <script>
-        // PREZZI ARROTONDATI BASE
-        const basePacks = [
-            { cost: 200, amount: 5100000 },
-            { cost: 100, amount: 2525000 },
-            { cost: 50, amount: 1140000 },
-            { cost: 25, amount: 480000 },
-            { cost: 10, amount: 150000 },
-            { cost: 5, amount: 60000 }
-        ];
+        const basePacks = [{ cost: 200, amount: 5100000 }, { cost: 100, amount: 2525000 }, { cost: 50, amount: 1140000 }, { cost: 25, amount: 480000 }, { cost: 10, amount: 150000 }, { cost: 5, amount: 60000 }];
 
-        // Listener: Ricalcola quando la lingua cambia
-        document.addEventListener('langLoaded', () => {
-            calculate();
-        });
+        document.addEventListener('langLoaded', () => calculate());
 
         function formatInput(input) {
             let value = input.value.replace(/\D/g, '');
             if (value === '') { input.value = ''; return; }
             input.value = new Intl.NumberFormat('it-IT').format(BigInt(value));
         }
+        function getRawValue(id) { const val = document.getElementById(id).value.replace(/\./g, ''); return val === '' ? 0 : parseInt(val); }
+        function setRate(m, c, d) { document.getElementById('rateCry').value = c; document.getElementById('rateDeut').value = d; calculate(); }
+        function resetFields() { document.getElementById('costMetal').value = ''; document.getElementById('costCrystal').value = ''; document.getElementById('costDeut').value = ''; document.getElementById('pasteArea').value = ''; document.getElementById('shopDiscount').value = "0"; document.getElementById('moBonus').value = "0"; document.getElementById('parseMultiplier').value = "1"; calculate(); }
 
-        function getRawValue(id) {
-            const val = document.getElementById(id).value.replace(/\./g, '');
-            return val === '' ? 0 : parseInt(val);
-        }
-
-        function setRate(m, c, d) {
-            document.getElementById('rateCry').value = c;
-            document.getElementById('rateDeut').value = d;
-            calculate();
-        }
-
-        function resetFields() {
-            document.getElementById('costMetal').value = '';
-            document.getElementById('costCrystal').value = '';
-            document.getElementById('costDeut').value = '';
-            document.getElementById('pasteArea').value = '';
-            document.getElementById('shopDiscount').value = "0"; 
-            document.getElementById('moBonus').value = "0"; 
-            document.getElementById('parseMultiplier').value = "1";
-            calculate();
-        }
-
-        // --- PARSING MULTI-RIGA CON MOLTIPLICATORE ---
         function parseString() {
             const text = document.getElementById('pasteArea').value;
             const multiplier = parseInt(document.getElementById('parseMultiplier').value) || 1;
-            
-            let totalMet = 0;
-            let totalCry = 0;
-            let totalDeut = 0;
-
-            const regexMet = /([\d\.]+)\s*Metallo/gi;
-            const regexCry = /([\d\.]+)\s*Cristallo/gi;
-            const regexDeut = /([\d\.]+)\s*Deuterio/gi;
-
+            let totalMet = 0, totalCry = 0, totalDeut = 0;
+            const regexMet = /([\d\.]+)\s*Metallo/gi, regexCry = /([\d\.]+)\s*Cristallo/gi, regexDeut = /([\d\.]+)\s*Deuterio/gi;
             let match;
             while ((match = regexMet.exec(text)) !== null) totalMet += parseInt(match[1].replace(/\./g, '')) || 0;
             while ((match = regexCry.exec(text)) !== null) totalCry += parseInt(match[1].replace(/\./g, '')) || 0;
             while ((match = regexDeut.exec(text)) !== null) totalDeut += parseInt(match[1].replace(/\./g, '')) || 0;
-
-            // Applica moltiplicatore
-            totalMet *= multiplier;
-            totalCry *= multiplier;
-            totalDeut *= multiplier;
-
+            totalMet *= multiplier; totalCry *= multiplier; totalDeut *= multiplier;
             if (totalMet > 0 || totalCry > 0 || totalDeut > 0) {
                 document.getElementById('costMetal').value = new Intl.NumberFormat('it-IT').format(totalMet);
                 document.getElementById('costCrystal').value = new Intl.NumberFormat('it-IT').format(totalCry);
                 document.getElementById('costDeut').value = new Intl.NumberFormat('it-IT').format(totalDeut);
-            } else if (text.trim().length > 0) {
-                alert("Nessuna risorsa trovata.");
-            }
-
+            } else if (text.trim().length > 0) alert("Nessuna risorsa trovata.");
             calculate();
         }
 
         function calculate() {
-            const met = getRawValue('costMetal');
-            const cry = getRawValue('costCrystal');
-            const deut = getRawValue('costDeut');
-            const rM = 3.0; 
-            const rC = parseFloat(document.getElementById('rateCry').value) || 2;
-            const rD = parseFloat(document.getElementById('rateDeut').value) || 1;
+            const met = getRawValue('costMetal'), cry = getRawValue('costCrystal'), deut = getRawValue('costDeut');
+            const rM = 3.0, rC = parseFloat(document.getElementById('rateCry').value)||2, rD = parseFloat(document.getElementById('rateDeut').value)||1;
             const packVal = getRawValue('packValue');
-            
             const shopDiscount = parseFloat(document.getElementById('shopDiscount').value) || 0;
             const bonusPercent = parseInt(document.getElementById('moBonus').value);
 
-            const cryInMet = cry * (rM / rC);
-            const deutInMet = deut * (rM / rD);
-            const totalMSE = met + cryInMet + deutInMet;
-
+            const totalMSE = met + (cry * (rM/rC)) + (deut * (rM/rD));
             let packs = 0;
             if (packVal > 0 && totalMSE > 0) packs = Math.ceil(totalMSE / packVal);
 
             const basePackPrice = 60000;
             const moPerPackCost = basePackPrice * (1 - (shopDiscount / 100));
-            
             const totalMONeeded = packs * moPerPackCost;
 
             document.getElementById('totalMSE').innerText = new Intl.NumberFormat('it-IT').format(Math.ceil(totalMSE));
@@ -361,103 +256,47 @@
             calculateSmartEuro(totalMONeeded, bonusPercent);
         }
 
-        // --- ALGORITMO RICORSIVO OTTIMIZZATO ---
         function calculateSmartEuro(targetMO, bonusPercent) {
-            if (targetMO <= 0) {
-                renderResult(0, []);
-                return;
-            }
-
+            if (targetMO <= 0) { renderResult(0, []); return; }
             const bonusMultiplier = 1 + (bonusPercent / 100);
-            const currentPacks = basePacks.map(p => ({
-                cost: p.cost,
-                amount: Math.floor(p.amount * bonusMultiplier)
-            }));
-
+            const currentPacks = basePacks.map(p => ({ cost: p.cost, amount: Math.floor(p.amount * bonusMultiplier) }));
             let bestSolution = findBestCombination(targetMO, currentPacks);
             renderResult(bestSolution.totalCost, bestSolution.packList);
         }
 
         function findBestCombination(target, packs) {
-            let currentTarget = target;
-            let totalCost = 0;
-            let packList = [];
-
-            for (let i = 0; i < packs.length; i++) {
-                let pack = packs[i];
-
-                if (i === packs.length - 1) {
-                    let count = Math.ceil(currentTarget / pack.amount);
-                    if (count > 0) {
-                        totalCost += count * pack.cost;
-                        packList.push({ count: count, pack: pack });
-                    }
-                    break;
-                }
-
-                let ceilingCount = Math.ceil(currentTarget / pack.amount);
-                let ceilingCost = ceilingCount * pack.cost;
-
-                let floorCount = Math.floor(currentTarget / pack.amount);
-                let remainder = currentTarget - (floorCount * pack.amount);
-                
-                if (remainder === 0) {
-                    totalCost += floorCount * pack.cost;
-                    if (floorCount > 0) packList.push({ count: floorCount, pack: pack });
-                    break;
-                }
-
-                let smallerPacks = packs.slice(i + 1);
-                let remainderSolution = solveRemainder(remainder, smallerPacks);
-                
-                let floorPathCost = (floorCount * pack.cost) + remainderSolution.cost;
-
-                if (ceilingCost <= floorPathCost) {
-                    totalCost += ceilingCost;
-                    if (ceilingCount > 0) packList.push({ count: ceilingCount, pack: pack });
-                    break; 
-                } else {
-                    if (floorCount > 0) {
-                        totalCost += floorCount * pack.cost;
-                        packList.push({ count: floorCount, pack: pack });
-                    }
-                    currentTarget = remainder; 
-                }
-            }
-
-            return { totalCost, packList };
-        }
-
-        function solveRemainder(amount, availablePacks) {
-            if (amount <= 0) return { cost: 0 };
-            if (availablePacks.length === 1) {
-                let p = availablePacks[0];
-                return { cost: Math.ceil(amount / p.amount) * p.cost };
-            }
-
-            let pack = availablePacks[0];
-            let ceilingCost = Math.ceil(amount / pack.amount) * pack.cost;
+            if (target <= 0) return { totalCost: 0, packList: [] };
+            let currentPack = packs[0];
             
-            let floorCount = Math.floor(amount / pack.amount);
-            let rem = amount - (floorCount * pack.amount);
-            let subRes = solveRemainder(rem, availablePacks.slice(1));
-            let floorPathCost = (floorCount * pack.cost) + subRes.cost;
+            // Ceiling (Buy current pack enough to cover everything)
+            let countA = Math.ceil(target / currentPack.amount);
+            let costA = countA * currentPack.cost;
+            
+            if (packs.length === 1) return { totalCost: costA, packList: [{ count: countA, pack: currentPack }] };
 
-            return { cost: Math.min(ceilingCost, floorPathCost) };
+            // Floor (Buy max full current packs + optimize remainder with smaller packs)
+            let countB = Math.floor(target / currentPack.amount);
+            let remainder = target - (countB * currentPack.amount);
+            let subResult = findBestCombination(remainder, packs.slice(1));
+            let costB = (countB * currentPack.cost) + subResult.totalCost;
+
+            if (costA <= costB) return { totalCost: costA, packList: [{ count: countA, pack: currentPack }] };
+            else {
+                let listB = subResult.packList;
+                if (countB > 0) listB.push({ count: countB, pack: currentPack });
+                return { totalCost: costB, packList: listB };
+            }
         }
 
         function renderResult(cost, list) {
             document.getElementById('euroTotal').innerText = cost + " €";
-
             let displayList = [];
             list.forEach(item => {
                 let found = displayList.find(x => x.pack.cost === item.pack.cost);
-                if(found) found.count += item.count;
-                else displayList.push({ count: item.count, pack: item.pack });
+                if(found) found.count += item.count; else displayList.push({ count: item.count, pack: item.pack });
             });
             displayList.sort((a,b) => b.pack.cost - a.pack.cost);
 
-            // USO t() PER TRADURRE I TESTI GENERATI DINAMICAMENTE
             let html = '';
             displayList.forEach(item => {
                  html += `
@@ -479,10 +318,7 @@
                 if (rawVal > 0) {
                     document.getElementById('packValue').value = new Intl.NumberFormat('it-IT').format(rawVal);
                     const label = document.getElementById('packSourceLabel');
-                    if(label) {
-                        label.innerText = t('pack_source_auto'); // Traduzione anche qui!
-                        label.classList.add("text-ogame-success");
-                    }
+                    if(label) { label.innerText = t('pack_source_auto'); label.classList.add("text-ogame-success"); }
                 }
             }
             calculate();
@@ -490,14 +326,6 @@
     </script>
 
     <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-      kofiWidgetOverlay.draw('galax95', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': 'Support me',
-        'floating-chat.donateButton.background-color': '#3399ff',
-        'floating-chat.donateButton.text-color': '#fff'
-      });
-    </script>
-
+    <script>kofiWidgetOverlay.draw('galax95', {'type': 'floating-chat','floating-chat.donateButton.text': 'Support me','floating-chat.donateButton.background-color': '#3399ff','floating-chat.donateButton.text-color': '#fff'});</script>
 </body>
 </html>
