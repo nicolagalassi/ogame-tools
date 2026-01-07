@@ -42,18 +42,19 @@
                         <span id="langLabel" class="text-[9px] font-bold uppercase">IT</span>
                     </button>
 
-                    <div id="lang-dropdown-menu" class="hidden absolute right-0 top-full mt-2 w-36 bg-[#161b22] border border-gray-700 rounded-xl shadow-2xl z-50 transform opacity-0 scale-95 transition-all duration-150 origin-top-right overflow-hidden">
-                        <div class="py-1">
-                            <button onclick="selectLang('it')" class="lang-option w-full text-left px-4 py-3 text-xs font-bold flex items-center gap-3 hover:bg-gray-800 transition border-b border-gray-700/50 last:border-0" data-lang="it">
-                                <span class="text-lg">🇮🇹</span> Italiano
+                    <div id="lang-dropdown-menu" class="hidden absolute right-0 top-full mt-2 w-32 bg-[#161b22] border border-gray-700 rounded-xl shadow-2xl z-50 transform opacity-0 scale-95 transition-all duration-150 origin-top-right overflow-hidden">
+                        <div class="p-1 space-y-0.5">
+                            <button onclick="selectLang('it')" class="lang-option w-full text-left px-3 py-2 text-xs font-bold flex items-center gap-2 rounded-lg transition" data-lang="it">
+                                <span class="bg-gray-700 text-white px-1.5 py-0.5 rounded text-[9px]">IT</span> Italiano
                             </button>
-                            <button onclick="selectLang('en')" class="lang-option w-full text-left px-4 py-3 text-xs font-bold flex items-center gap-3 hover:bg-gray-800 transition" data-lang="en">
-                                <span class="text-lg">🇬🇧</span> English
+                            <button onclick="selectLang('en')" class="lang-option w-full text-left px-3 py-2 text-xs font-bold flex items-center gap-2 rounded-lg transition" data-lang="en">
+                                <span class="bg-gray-700 text-white px-1.5 py-0.5 rounded text-[9px]">EN</span> English
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </header>
 
     <div class="max-w-7xl mx-auto px-4 md:px-6">
@@ -77,6 +78,7 @@
                                 <option value="facilities" data-i18n="cat_facilities">Strutture</option>
                                 <option value="research" data-i18n="cat_research">Ricerche</option>
                                 <option value="fleet" data-i18n="cat_fleet">Flotta/Difesa</option>
+                                <option value="lf_rock" data-i18n="cat_lf_rock">LF Rock'tal</option>
                             </select>
                         </div>
                         <div class="md:col-span-1">
